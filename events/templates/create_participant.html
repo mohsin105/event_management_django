@@ -1,0 +1,30 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Participant</title>
+    <link rel="stylesheet" href="{% static 'css/output.css' %}">
+</head>
+<body>
+    {% include "nav_bar.html" %}
+    <h1 class="text-3xl text-center">Enroll a participant</h1>
+    <div class="text-center w=1/2 mx-auto my-10 border-3 border-black">
+        {% if messages %}
+            {% for message in messages %}
+            <p>{{message}}</p>
+            {% endfor %}
+
+        {% endif %}
+        <div class="w=1/2 mx-auto border-3 border-black">
+
+            <form action="" method="POST" >
+                {% csrf_token %}
+                {{participant_form.as_p}}
+                <button type="submit" class="mb-5 bg-rose-600 px-3 py-2 text-white mt-2 rounded-md">Submit </button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

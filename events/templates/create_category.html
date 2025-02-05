@@ -1,0 +1,29 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Category</title>
+    <link rel="stylesheet" href="{% static 'css/output.css' %}">
+</head>
+<body>
+    {% include "nav_bar.html" %}
+    <h1>Create a New Category!!</h1>
+    <div>
+        {% if messages %}
+            {% for message in messages %}
+                <p>{{message}}</p>
+            {% endfor %}
+        {% endif %}
+        <div class="border text-center">
+            <form action="" method="POST">
+                {% csrf_token %}
+                {{category_form.as_p}}
+                <button type="submit" class="bg-violet-600 text-white p-2">Submit</button>
+            </form>
+        </div>
+    </div>
+    
+</body>
+</html>

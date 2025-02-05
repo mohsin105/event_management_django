@@ -5,20 +5,62 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Event Management</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% comment %} <link rel="stylesheet" href="{% static 'css/style.css' %}"> {% endcomment %}
     <link rel="stylesheet" href="{% static 'css/output.css' %}">
 </head>
 <body>
-    <h1 class="text-3xl">Welcome| Dashboard nav bar here</h1>
-    <div class="test_design">
+    {% include "nav_bar.html" %}
+    <div class="test_design w-full text-center p-5 bg-cyan-200">
 
-        <h2 class="text-6xl">This is the event management system home page. </h2>
-        <p>Company name, company theme line, a good bg image preferably</p>
+        <h2 class="text-8xl">THE EVENT </h2>
+        <p class="text-3xl">Seamless Events, Unforgettable Moments</p>
     </div>
-    <p class="text-lg italic text-green-500 text-center">Search button here. </p>
-    <div class="text-indigo-700 bg-gray-500 w-9/12 h-72 text-center">
-        <p>Again testing tailwind integration</p>
-        <p>All events shown here. </p>
+    <div>
+        <form action="" class="m-4 text-center">
+            <input type="text" class="border-4">
+            <button type="submit" class="bg-violet-600 text-white p-2">Search</button>
+        </form>
+    </div>
+    {% comment %} <p class="text-lg italic text-green-500 text-center">Search button here. </p> {% endcomment %}
+    <div class="all_task bg-white  rounded-lg p-3 mt-3">
+           
+        <div class="all_task_body grid grid-cols-4 gap-1 text-lg font-bold">
+            <!-- <div class="task_body_heading"></div> -->
+             <p>Event Name</p>
+             <p>Category</p>
+             <p>Participants</p>
+             <p>Do More</p>
+        </div>
+        
+        {% for event in events %}
+        <div class="grid grid-cols-4 gap-2 text-sm mt-6">
+
+            <div class="flex items-center gap-1">
+               <div class="list_style w-1 h-1 bg-green-600 rounded-full "></div>
+               <p>{{event.name}}</p>
+            </div>
+            <div class="flex items-center">
+               <div class=" bg-blue-200 w-fit p-0.5 rounded-md ">
+                   <p>{{event.category}}</p>
+
+               </div>
+            </div>
+            <div class="flex gap-1 text-center -space-x-3 text-white">
+               
+                <div class="list_style w-6 h-6 bg-green-600 rounded-full border border-white self-center flex items-center justify-center ">
+                     <p >{{event.participant_list.all.count}}</p>
+                 </div>
+                
+                
+             </div>
+            <div class="flex items-center gap-5">
+
+                <p>{{event.date}}</p>
+                <a href="{% url 'details' event.id %}">Details</a>
+            </div>
+        </div>
+        {% endfor %}
+        
     </div>
 </body>
 </html>

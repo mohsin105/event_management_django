@@ -1,0 +1,140 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'css/output.css' %}">
+</head>
+<body>
+    {% comment %} Navbar section {% endcomment %}
+    {% include "nav_bar.html" %}
+
+    {% comment %} Stats grid section {% endcomment %}
+    <section class="progress grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <a href="{% url 'dashboard' %}?type=participants">
+            <div class="progress_card bg-white p-2 rounded-lg border border-black">
+                <h3 class="card_heading text-sm mb-2">Total Participants</h3>
+                <div class="card_body flex justify-between">
+                    <div class="text_side">
+                        <p class="text-xl font-semibold">{{event_count.unique_participants}}</p>
+                        
+                    </div>
+                    <div class="icon_side w-7  flex justify-center ">
+                        
+                    <!-- icon ke padding diye backgournd color apply korsi
+                    and border rounded korsi -->
+                    <!-- parent div ke flex kore justify content k center e anchi, ete icon center e asche -->
+                    </div>
+                </div>
+            </div>
+        </a>
+        <a href="{% url 'dashboard' %}?type=total">
+            <div class="progress_card bg-white p-2 rounded-lg border border-black">
+                <h3 class="card_heading text-sm mb-2">Total Events</h3>
+                <div class="card_body flex justify-between">
+                    <div class="text_side">
+                        <p class="text-xl font-semibold">{{event_count.total}}</p>
+                        
+                    </div>
+                    <div class="icon_side w-7  flex justify-center ">
+                        
+                        
+                    <!-- icon ke padding diye backgournd color apply korsi
+                    and border rounded korsi -->
+                    <!-- parent div ke flex kore justify content k center e anchi, ete icon center e asche -->
+                    </div>
+                </div>
+            </div>
+        </a>
+        <a href="{% url 'dashboard' %}?type=upcoming">
+            <div class="progress_card bg-white p-2 rounded-lg border border-black ">
+                <h3 class="card_heading text-sm mb-2">Upcoming Events</h3>
+                <div class="card_body flex justify-between">
+                    <div class="text_side">
+                        <p class="text-xl font-semibold">{{event_count.upcoming}}</p>
+                        
+                    </div>
+                    <div class="icon_side w-7  flex justify-center ">
+                        
+                        
+                    <!-- icon ke padding diye backgournd color apply korsi
+                    and border rounded korsi -->
+                    <!-- parent div ke flex kore justify content k center e anchi, ete icon center e asche -->
+                    </div>
+                </div>
+            </div>
+        </a>
+        <a href="{% url 'dashboard' %}?type=past">
+            <div class="progress_card bg-white p-2 rounded-lg border border-black ">
+                <h3 class="card_heading text-sm mb-2">Past Events</h3>
+                <div class="card_body flex justify-between">
+                    <div class="text_side">
+                        <p class="text-xl font-semibold">{{event_count.past}}</p>
+                        
+                    </div>
+                    <div class="icon_side w-7  flex justify-center ">
+                        
+                    <!-- icon ke padding diye backgournd color apply korsi
+                    and border rounded korsi -->
+                    <!-- parent div ke flex kore justify content k center e anchi, ete icon center e asche -->
+                    </div>
+                </div>
+            </div>
+        </a>
+    </section>
+    {% if messages %}
+        {% for message in messages %}
+        <p>{{message}}</p>
+        {% endfor %}
+    {% endif %}
+    {% comment %} Event display section {% endcomment %}
+    <div class="all_task bg-white  rounded-lg p-3 mt-3">
+        <h3 class="font-bold text-2xl text-center my-3">{{title}}</h3>   
+        <div class="all_task_body grid grid-cols-4 gap-1 text-sm font-bold">
+            <!-- <div class="task_body_heading"></div> -->
+             <p>Event Name</p>
+             <p>Category</p>
+             <p>Participants</p>
+             <p>Do More</p>
+        </div>
+        
+        {% for event in events %}
+        <div class="grid grid-cols-4 gap-2 text-sm mt-2 border my-6 p-2">
+
+            <div class="flex items-center gap-1">
+               <div class="list_style w-1 h-1 bg-green-600 rounded-full "></div>
+               <p class="font-semibold">{{event.name}}</p>
+            </div>
+            <div class="flex items-center">
+               <div class=" bg-blue-200 w-fit p-1 rounded-md ">
+                   <p>{{event.category}}</p>
+
+               </div>
+            </div>
+            <div class="flex gap-1 text-center -space-x-3 text-white">
+               
+                <div class="list_style w-6 h-6 bg-green-600 rounded-full border border-white self-center flex items-center justify-center ">
+                     <p >{{event.participant_list.all.count}}</p>
+                 </div>
+                
+                
+             </div>
+            <div class="flex items-center gap-3">
+
+                <p>{{event.date}}</p>
+                <a href="{% url 'details' event.id %}">Details</a>
+                <a href="{% url 'update-event' event.id %}">Update</a>
+                <form action="{% url 'delete-event' event.id %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit">Delete</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+        
+    </div>
+    
+</body>
+</html>

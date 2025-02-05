@@ -20,8 +20,10 @@
         <form action="" method="POST">
             {% csrf_token %}
             <div class="border">{{event_form.as_p}}</div>
+
             
             <button type="submit" class="mb-5 bg-rose-600 px-3 py-2 text-white mt-2 rounded-md">Submit</button>
+            <p class="font-bold text-red-700">Cannot find your participant? <a href="{% url 'create-participant' %}" class="text-blue-600">Create participant here at first</a></p>
         </form>
     </div>
 </body>

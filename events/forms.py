@@ -4,7 +4,7 @@ from events.models import Event,Participant,Category
 
 class EventModelForm(forms.ModelForm):
     participants=forms.ModelMultipleChoiceField(queryset=Participant.objects.all(),
-                                                widget=forms.CheckboxSelectMultiple)
+                                                widget=forms.CheckboxSelectMultiple,required=False)
     class Meta:
         model=Event
         fields=['name','description','date','time','location','category','participants'] #,'participant_list' does not work
@@ -13,10 +13,10 @@ class EventModelForm(forms.ModelForm):
                  'description':forms.Textarea(attrs={'class':'border border-3'}),
                  'date':forms.SelectDateWidget(attrs={'class':'border'}),
                  'time':forms.TimeInput(attrs={'placeholder':'HH:MM:SS','class':'border'}),
-                 'location':forms.Textarea(attrs={'class':'border border-3'}),
-                #  'category':forms.RadioSelect(attrs={'class':'border border-3'})
+                 'location':forms.Textarea(attrs={'class':'border border-3'}),'category':forms.Select(attrs={'class':' display-block bg-black border border-3'})
+                #  'category':forms.CheckboxSelectMultiple(attrs={'class':' display-block bg-black'})
                  }
-                 
+# 'category':forms.Select(attrs={'class':' display-block bg-black border border-3'})                 
 
 
 class ParticipantModelForm(forms.ModelForm):

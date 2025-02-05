@@ -27,9 +27,12 @@ def create_event(request):
             # context={'event_form':event_form,'message':"Event Created Succesfully!"}
             # return render(request,'create_event.html',context)
 
-            participants=request.POST.getlist('participants')
+            participants=request.POST.getlist('participants',[])
             print(participants)
-            event.participant_list.set(participants)
+            print(request.POST)
+            if participants:
+                event.participant_list.set(participants)
+                
 
             messages.success(request,'Event created successfully!')
             context={'event_form':event_form}

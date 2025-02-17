@@ -1,0 +1,22 @@
+{% comment %} base template and footer section {% endcomment %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Management{% block title %}{% endblock title %} </title>
+    {% comment %} <link rel="stylesheet" href="{% static 'css/style.css' %}"> {% endcomment %}
+    <link rel="stylesheet" href="{% static 'css/output.css' %}">
+</head>
+    <body>
+        {% if user.is_authenticated %}
+            {% include "logged_nav.html" %}
+        {% else %}
+            {% include "non_logged_nav.html" %}
+        {% endif %}
+        {% block content %}
+        
+        {% endblock content %}
+    </body>
+</html>

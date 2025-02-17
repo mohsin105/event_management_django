@@ -1,14 +1,6 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Category</title>
-    <link rel="stylesheet" href="{% static 'css/output.css' %}">
-</head>
-<body>
-    {% include "nav_bar.html" %}
+{% extends "base.html" %}
+{% block title %}Create Category{% endblock title %}
+{% block content %}
     <h1>Create a New Category!!</h1>
     <div>
         {% if messages %}
@@ -24,6 +16,4 @@
             </form>
         </div>
     </div>
-    
-</body>
-</html>
+{% endblock content %}

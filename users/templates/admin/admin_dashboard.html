@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock title %}
+{% block content %}
+<div class="w-1/2 mx-auto border-2 border-black">
+    <section class="progress grid grid-cols-2 sm:grid-cols-4 gap-4 justify-between">
+        <a href="{% url 'user-list' %}">
+            <div class="progress_card bg-white p-2 rounded-lg border border-black">
+                <h3 class="card_heading text-sm mb-2">Total Participants</h3>
+                <div class="card_body flex justify-between">
+                    <div class="text_side">
+                        <p class="text-xl font-semibold">{{event_count.unique_participants}}</p>
+                        
+                    </div>
+                    <div class="icon_side w-7  flex justify-center ">
+                        
+                    <!-- icon ke padding diye backgournd color apply korsi
+                    and border rounded korsi -->
+                    <!-- parent div ke flex kore justify content k center e anchi, ete icon center e asche -->
+                    </div>
+                </div>
+            </div>
+        </a>
+        <a href="{% url 'organizer-dashboard' %}">
+            <div class="progress_card bg-white p-2 rounded-lg border border-black">
+                <h3 class="card_heading text-sm mb-2">Events</h3>
+                <div class="card_body flex justify-between">
+                    <div class="text_side">
+                        <p class="text-xl font-semibold"></p>
+                        
+                    </div>
+                    <div class="icon_side w-7  flex justify-center ">
+                        
+                        
+                    <!-- icon ke padding diye backgournd color apply korsi
+                    and border rounded korsi -->
+                    <!-- parent div ke flex kore justify content k center e anchi, ete icon center e asche -->
+                    </div>
+                </div>
+            </div>
+        </a>
+        <a href="{% url 'group-list' %}">
+            <div class="progress_card bg-white p-2 rounded-lg border border-black ">
+                <h3 class="card_heading text-sm mb-2">Groups</h3>
+                <div class="card_body flex justify-between">
+                    <div class="text_side">
+                        <p class="text-xl font-semibold"></p>
+                        
+                    </div>
+                    <div class="icon_side w-7  flex justify-center ">
+                        
+                        
+                    <!-- icon ke padding diye backgournd color apply korsi
+                    and border rounded korsi -->
+                    <!-- parent div ke flex kore justify content k center e anchi, ete icon center e asche -->
+                    </div>
+                </div>
+            </div>
+        </a>
+        
+    </section>
+</div>
+{% endblock content %}

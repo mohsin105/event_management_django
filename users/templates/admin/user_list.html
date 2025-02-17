@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Participants{% endblock title %}
+{% block content %}
+<div class="grid grid-cols-4 gap-2 text-sm mt-2 border my-6 p-2">
+    <p>User Name</p>
+    <p>Role</p>
+    <p>Registered Events</p>
+    <p>Update</p>
+</div>
+{% for user in users %}
+<div class="grid grid-cols-4 gap-2 text-sm mt-2 border my-6 p-2">
+
+    <div class="flex items-center gap-1">
+       <div class="list_style w-1 h-1 bg-green-600 rounded-full "></div>
+
+       <p class="font-semibold">{{forloop.counter}}</p>
+       <p class="font-semibold">{{user.first_name}} {{user.last_name}}</p>
+       <p >{{user.email}}</p>
+    </div>
+    <div class="flex items-center">
+       <div class=" bg-blue-200 w-fit p-1 rounded-md ">
+           <p>{{user.groups.first.name|default:"No Group Assigned"}}</p>
+
+       </div>
+    </div>
+    <div class="flex gap-1 text-center -space-x-3 text-white">
+       
+        <div class="list_style w-6 h-6 bg-green-600 rounded-full border border-white self-center flex items-center justify-center ">
+             <p >{{user.rsvp_events.all.count}}</p>
+             
+             
+         </div>
+        
+        
+     </div>
+    <div class="flex items-center gap-3">
+
+        <a
+        href="{% url 'assign-role' user.id %}"
+        class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+        >
+        Change Role
+        </a>
+        
+        
+        <form action="{% url 'delete-participant' user.id %}" method="POST">
+            {% csrf_token %}
+            <button type="submit">Delete</button>
+        </form>
+    </div>
+</div>
+{% endfor %}
+{% endblock content %}

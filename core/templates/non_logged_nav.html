@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'css/output.css' %}">
+</head>
+<body>
+    <section class="dashboard flex justify-between mb-3 bg-slate-200 p-5">
+        <h1 class="text-xl font-semibold">
+            <a href="{% url 'home' %}">Event</a></li>
+        </h1>
+        <div >
+            <ul class="flex justfiy-evenly gap-x-4 ">
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href=""></a>Events</li>
+                <li><a href="">Gallery</a></li>
+                <li><a href="">Pages</a></li>
+                <li><a href="">About Us</a></li>
+                {% comment %} <a href="{% url 'dashboard' %}">Dashboard</a> {% endcomment %}
+                
+            </ul>
+            
+        </div>
+        <div class="icon_home flex gap-x-3">
+            
+              
+            <div class="home_btn  bg-sky-500 rounded  p-1 text-center">
+                <a href="{% url 'sign-in' %}" class="text-white">Sign In</a>
+                {% comment %} <p class="text-white">Sign In</p> {% endcomment %}
+            </div>
+            <div class="home_btn  bg-sky-500 rounded  p-1 text-center">
+                <a href="{% url 'create-participant' %}" class="text-white">Sign Up</a>
+                {% comment %} <p class="text-white">Sign Up</p> {% endcomment %}
+            </div>
+        </div>
+    </section>
+</body>
+</html>

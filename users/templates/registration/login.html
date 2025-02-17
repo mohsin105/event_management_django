@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Log In{% endblock title %}
+{% block content %}
+    <div>
+        {% comment %} for non-field errors {% endcomment %}
+        {% comment %} {% if form.non_field_errors %}
+            {% for error in form.non_field_errors %}
+                <p>{{error}}</p>
+            {% endfor %}
+        {% endif %} {% endcomment %}
+    </div>
+    <div>
+        {% if messages %}
+            {% for message in messages %}
+            <p>{{message}}</p>
+            {% endfor %}
+        {% endif %}
+    </div>
+    <div>
+        <form action="" method="POST">
+            {% csrf_token %}
+            {{form.as_p}}
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+{% endblock content %}

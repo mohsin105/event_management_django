@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Assign Role{% endblock title %}
+{% block content %}
+
+    <div class="w-1/2 mx-auto border border-black p-5">
+        {% if messages %}
+            {% for message in messages %}
+                <p>{{message}}</p>
+            {% endfor %}
+        {% endif %}
+        <form action="" method="POST">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="border border-black m-2 p-2">
+                    <label for="{{field.id_for_label}}" class="font-bold">{{field.label}}</label> 
+                    <span class="border border-black w-fit">{{field}}</span>
+                </div>
+            {% endfor %}
+            
+            <button type="submit">Create Group</button>
+        </form>
+    </div>
+{% endblock content %}

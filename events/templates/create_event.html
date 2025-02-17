@@ -1,14 +1,6 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Event</title>
-    <link rel="stylesheet" href="{% static 'css/output.css' %}">
-</head>
-<body>
-    {% include "nav_bar.html" %}
+{% extends "base.html" %}
+{% block title %}create event{% endblock title %}
+{% block content %}
     <h1>Event creation form page</h1>
     {% if messages %}
         {% for message in messages %}
@@ -17,7 +9,7 @@
     {% endif %}
     <div class="w-1/2 mx-auto mt-8">
         
-        <form action="" method="POST">
+        <form action="" method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="border">{{event_form.as_p}}</div>
 
@@ -26,5 +18,4 @@
             <p class="font-bold text-red-700">Cannot find your participant? <a href="{% url 'create-participant' %}" class="text-blue-600">Create participant here at first</a></p>
         </form>
     </div>
-</body>
-</html>
+{% endblock content %}

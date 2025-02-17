@@ -1,26 +1,26 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
-from events.forms import EventModelForm,CategoryModelForm,ParticipantModelForm
-from events.models import Event,Participant,Category
+from events.forms import EventModelForm,CategoryModelForm
+from events.models import Event,Category
 from django.contrib import messages
 from datetime import date
 from django.db.models import Q,Count
+from django.contrib.auth.decorators import login_required,user_passes_test
+from users.views import is_admin,is_organizer,admin_or_organizer
 
 # Create your views here.
-def home(request):
-    events=Event.objects.select_related('category').prefetch_related('participant_list').all()
-    context={'events':events}
-    return render(request,'home.html',context)
+
     
 
 def event(request):
     return HttpResponse("This is the list of all events")
 
+@user_passes_test(admin_or_organizer,login_url='no-permission')
 def create_event(request):
     event_form=EventModelForm()
 
     if request.method=='POST':
-        event_form=EventModelForm(request.POST)
+        event_form=EventModelForm(request.POST,request.FILES)
         if event_form.is_valid():
             event=event_form.save(commit=False)
             event_form.save()
@@ -31,7 +31,7 @@ def create_event(request):
             print(participants)
             print(request.POST)
             if participants:
-                event.participant_list.set(participants)
+                event.participants.set(participants)
                 
 
             messages.success(request,'Event created successfully!')
@@ -46,7 +46,7 @@ def create_event(request):
     context={ 'event_form':event_form}
     return render(request,'create_event.html',context)
 
-
+@user_passes_test(admin_or_organizer,login_url='no-permission')
 def create_category(request):
     category_form=CategoryModelForm()
 
@@ -64,21 +64,8 @@ def create_category(request):
     context={'category_form':category_form}
     return render(request,'create_category.html',context)
 
-def create_participant(request):
-    participant_form=ParticipantModelForm()
 
-    if request.method=='POST':
-        participant_form=ParticipantModelForm(request.POST)
-        if participant_form.is_valid():
-            participant_form.save()
-            messages.success(request,'Participant enrolled succesfully')
-            return redirect('create-participant')
-        else:
-            messages.error(request,'Properly fill up the form!')
-
-    context={'participant_form':participant_form}
-    return render(request,'create_participant.html',context)
-
+@user_passes_test(admin_or_organizer,login_url='no-permission')
 def update_event(request,id):
     event=Event.objects.get(id=id)
     event_form=EventModelForm(instance=event)
@@ -91,10 +78,11 @@ def update_event(request,id):
 
             participants=request.POST.getlist('participants')
             # event.participant_list.set(participants)
+            print('participant  list: ')
             print(participants)
 
             for member in participants:
-                event.participant_list.add(member)
+                event.participants.add(member)  #prefetch_related name replaced from 'participant_list'
 
             messages.success(request,'Event Updated Succesfully!')
             return redirect('update-event',id)
@@ -106,16 +94,16 @@ def update_event(request,id):
     return render(request,'create_event.html',context)
 
 
-
+#organizer_dashboard
 def show_dashboard(request):
     query_type=request.GET.get('type')
-    events=Event.objects.select_related('category').prefetch_related('participant_list')
+    events=Event.objects.select_related('category').prefetch_related('participants') #prefetch_related name replaced from 'participant_list'
 
     event_count=Event.objects.aggregate(total=Count('id',distinct=True),
                                         upcoming=Count('id',filter=Q(date__gt=date.today()),distinct=True),
                                         past=Count('id',filter=Q(date__lt=date.today()),distinct=True),
-                                        unique_participants=Count('participant_list',distinct=True)
-                                        )
+                                        unique_participants=Count('participants',distinct=True)
+                                        ) #prefetch_related name replaced from 'participant_list'
 
     if query_type=='total':
         title='Total Events'
@@ -140,13 +128,14 @@ def show_dashboard(request):
              'event_count':event_count}
     return render(request,'dashboard.html',context)
 
-def show_details(request,id):
-    event=Event.objects.prefetch_related('participant_list').get(id=id)
+def show_details(request,id): #prefetch_related name replaced from 'participant_list'
+    event=Event.objects.prefetch_related('participants').get(id=id)
 
     context={'event':event}
 
     return render(request,'event_details.html',context)
 
+@user_passes_test(admin_or_organizer,login_url='no-permission')
 def delete_event(request,id):
     if request.method=='POST':
         event=Event.objects.get(id=id)
@@ -156,6 +145,19 @@ def delete_event(request,id):
     else:
         messages.error(request,'Event NOT deleted')
         return redirect('dashboard')
+
+@user_passes_test(admin_or_organizer,login_url='no-permission')
+def delete_category(request,id):
+    if request.method=='POST':
+        category=Category.objects.get(id=id)
+        category.delete()
+        messages.success(request,'Category deleted!!')
+        return redirect('dashboard')
+    else:
+        messages.error(request,'Category NOT deleted')
+        return redirect('dashboard')
+
+
 
 
     

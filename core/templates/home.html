@@ -1,15 +1,5 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Event Management</title>
-    {% comment %} <link rel="stylesheet" href="{% static 'css/style.css' %}"> {% endcomment %}
-    <link rel="stylesheet" href="{% static 'css/output.css' %}">
-</head>
-<body>
-    {% include "nav_bar.html" %}
+{% extends "base.html" %}
+{% block content %}
     <div class="test_design w-full text-center p-5 bg-cyan-200">
 
         <h2 class="text-8xl">THE EVENT </h2>
@@ -48,7 +38,7 @@
             <div class="flex gap-1 text-center -space-x-3 text-white">
                
                 <div class="list_style w-6 h-6 bg-green-600 rounded-full border border-white self-center flex items-center justify-center ">
-                     <p >{{event.participant_list.all.count}}</p>
+                     <p >{{event.participants.all.count}}</p>
                  </div>
                 
                 
@@ -62,5 +52,4 @@
         {% endfor %}
         
     </div>
-</body>
-</html>
+{% endblock content %}

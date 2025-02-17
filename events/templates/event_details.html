@@ -1,19 +1,20 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="{% static 'css/output.css' %}">
-</head>
-<body>
-    {% include "nav_bar.html" %}
+{% extends "base.html" %}
+{% block title %}Details{% endblock title %}
+{% block content %}
     <section class="text-center w-4/5 mx-auto rounded-lg bg-cyan-100 p-5">
         <div class="m-3">
             <h1 class="text-3xl my-2">{{event.name}}</h1>
             <h4 class="text-xl">{{event.category}}</h4>
-
+            <div>
+                {% if event.asset %}
+                <img
+                src="{{event.asset.url}}"
+                alt="Event Manager App Screenshot 1"
+                class="w-full rounded-lg"
+                />
+                {% endif %}
+            </div>
+{% comment %}  {% endcomment %}
         </div>
         <div class="flex justify-evenly m-4">
 
@@ -26,10 +27,9 @@
         </div>
         <div class="text-left w-4/5 mx-auto">
             <h4 class="text-xl">Participants: </h4>
-            {% for member in event.participant_list.all %}
-                <p>{{member.name}}</p>
+            {% for member in event.participants.all %}
+                <p>{{member.first_name}} {{member.last_name}}</p>
             {% endfor %}
         </div>
     </section>
-</body>
-</html>
+{% endblock content %}

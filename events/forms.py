@@ -1,13 +1,14 @@
 from django import forms
-from events.models import Event,Participant,Category
+from events.models import Event,Category
+from django.contrib.auth.models import User,Group
 
 
-class EventModelForm(forms.ModelForm):
-    participants=forms.ModelMultipleChoiceField(queryset=Participant.objects.all(),
+class EventModelForm(forms.ModelForm): #queryset e participant k user diye replace korsi. 
+    participants=forms.ModelMultipleChoiceField(queryset=User.objects.all(),
                                                 widget=forms.CheckboxSelectMultiple,required=False)
     class Meta:
         model=Event
-        fields=['name','description','date','time','location','category','participants'] #,'participant_list' does not work
+        fields=['name','description','date','time','location','category','participants','asset'] #,'participant_list' does not work
 
         widgets={'name':forms.TextInput(attrs={'placeholder': 'Enter Name','class':'border'}),
                  'description':forms.Textarea(attrs={'class':'border border-3'}),
@@ -18,13 +19,9 @@ class EventModelForm(forms.ModelForm):
                  }
 # 'category':forms.Select(attrs={'class':' display-block bg-black border border-3'})                 
 
+# sign-up new participant user
 
-class ParticipantModelForm(forms.ModelForm):
-    class Meta:
-        model=Participant
-        fields=['name','email','events']
 
-        widgets={'events':forms.CheckboxSelectMultiple(attrs={'class':'border border-3'})}
 
 class CategoryModelForm(forms.ModelForm):
     class Meta:

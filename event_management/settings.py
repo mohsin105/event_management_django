@@ -158,6 +158,9 @@ INTERNAL_IPS = [
     # ...
 ]
 
+ALLOWED_HOSTS = ['*']
+CSRF_TRUSTED_ORIGINS=["https://*.onrender.com","http://127.0.0.1:8000"]
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 

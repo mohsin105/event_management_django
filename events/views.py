@@ -7,7 +7,9 @@ from datetime import date
 from django.db.models import Q,Count
 from django.contrib.auth.decorators import login_required,user_passes_test
 from users.views import is_admin,is_organizer,admin_or_organizer
-
+from django.views.generic import CreateView,UpdateView,DeleteView,ListView,DetailView
+from django.contrib.auth.mixins import PermissionRequiredMixin,UserPassesTestMixin,LoginRequiredMixin
+from django.urls import reverse_lazy
 # Create your views here.
 
     
@@ -94,7 +96,7 @@ def update_event(request,id):
     return render(request,'create_event.html',context)
 
 
-#organizer_dashboard
+"""organizer_dashboard FBV
 def show_dashboard(request):
     query_type=request.GET.get('type')
     events=Event.objects.select_related('category').prefetch_related('participants') #prefetch_related name replaced from 'participant_list'
@@ -127,6 +129,52 @@ def show_dashboard(request):
              'title':title,
              'event_count':event_count}
     return render(request,'dashboard.html',context)
+"""
+
+
+class OrganizerDashboard(ListView):
+    model=Event
+    template_name='dashboard.html'
+    context_object_name='events'
+
+
+    def get_context_data(self, **kwargs):
+        context= super().get_context_data(**kwargs)
+        query_type=self.request.GET.get('type')
+
+        event_count=Event.objects.aggregate(total=Count('id',distinct=True),
+                                        upcoming=Count('id',filter=Q(date__gt=date.today()),distinct=True),
+                                        past=Count('id',filter=Q(date__lt=date.today()),distinct=True),
+                                        unique_participants=Count('participants',distinct=True)
+                                        ) 
+        context['event_count']=event_count
+
+        if query_type=='total':
+            context['title']='Total Events'
+        elif query_type=='upcoming':
+            context['title']='Upcoming Events'
+        elif query_type=='upcoming':
+            context['title']='Upcoming Events'
+        elif query_type=='past':
+            context['title']='Past Events'
+        else:
+            context['title']='Todays Events'
+        return context
+    
+    def get_queryset(self):
+        query_type=self.request.GET.get('type')
+        events=Event.objects.select_related('category').prefetch_related('participants')
+        if query_type=='total':
+            events=events.all()
+        
+        elif query_type=='upcoming':
+            events=events.filter(date__gt=date.today())
+        elif query_type=='past':
+            events=events.filter(date__lt=date.today())
+        else:
+            upcomingEvents=Event.objects.filter(date__gt=date.today())
+            events=events.filter(date__exact=date.today())
+        return events
 
 def show_details(request,id): #prefetch_related name replaced from 'participant_list'
     event=Event.objects.prefetch_related('participants').get(id=id)
@@ -134,6 +182,26 @@ def show_details(request,id): #prefetch_related name replaced from 'participant_
     context={'event':event}
 
     return render(request,'event_details.html',context)
+"""Event Details CBV hoy nai
+
+
+class EventDetails(DetailView):
+    model=Event
+    context_object_name='event'
+    template_name='event_details.html'
+    # pk_url_kwarg='id'
+    def get_queryset(self):
+        # id=self.kwargs.get('id')
+        event=self.get_object()
+        print(event)
+        print('event id: ',event.id)
+        return Event.objects.prefetch_related('participants').get(id=event.id)
+"""
+
+
+"""delete_event FBV
+
+
 
 @user_passes_test(admin_or_organizer,login_url='no-permission')
 def delete_event(request,id):
@@ -145,6 +213,24 @@ def delete_event(request,id):
     else:
         messages.error(request,'Event NOT deleted')
         return redirect('dashboard')
+"""
+
+class DeleteEvent(UserPassesTestMixin,LoginRequiredMixin,DeleteView):
+    login_url='no-permission'
+    model=Event
+    pk_url_kwarg='id'
+    success_url=reverse_lazy('dashboard')
+
+    def test_func(self):
+        return admin_or_organizer(self.request.user)
+    
+    def delete(self, request, *args, **kwargs):
+        messages.success(request,'Event deleted!!')
+        return super().delete(request, *args, **kwargs)
+
+
+"""delete_category FBV
+
 
 @user_passes_test(admin_or_organizer,login_url='no-permission')
 def delete_category(request,id):
@@ -156,8 +242,20 @@ def delete_category(request,id):
     else:
         messages.error(request,'Category NOT deleted')
         return redirect('dashboard')
+"""
 
+class DeleteCategory(UserPassesTestMixin,LoginRequiredMixin,DeleteView):
+    model=Category
+    login_url='no-permission'
+    success_url=reverse_lazy('dashboard')
+    pk_url_kwarg='id'
 
+    def test_func(self):
+        return admin_or_organizer(self.request.user)
+    
+    def delete(self,request,*args,**kwargs):
+        messages.success(request,'Category deleted!!')
+        return super().delete(request,*args,**kwargs)
 
 
     

@@ -17,6 +17,7 @@ from decouple import config
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+AUTH_USER_MODEL='users.CustomUser'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -88,25 +89,25 @@ WSGI_APPLICATION = 'event_management.wsgi.application'
 # }
 
 # for PostgresQl
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'event_management',
-#         'USER': 'postgres',
-#         'PASSWORD': '123456',
-#         'HOST': 'localhost',
-#         'PORT': '5432'
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'event_management',
+        'USER': 'postgres',
+        'PASSWORD': '123456',
+        'HOST': 'localhost',
+        'PORT': '5432'
+    }
+}
 
 # for online DB on render.com
-DATABASES = {
-    'default': dj_database_url.config(
-        # Replace this value with your local database's connection string.
-        default='postgresql://event_management_django_db_user:Sq5qC2g3LAUo5PG110MjfhMEKijeOu2w@dpg-cuhmiv1u0jms73ac5jb0-a.oregon-postgres.render.com/event_management_django_db',
-        conn_max_age=600
-    )
-}
+# DATABASES = {
+#     'default': dj_database_url.config(
+#         # Replace this value with your local database's connection string.
+#         default='postgresql://event_management_django_db_user:Sq5qC2g3LAUo5PG110MjfhMEKijeOu2w@dpg-cuhmiv1u0jms73ac5jb0-a.oregon-postgres.render.com/event_management_django_db',
+#         conn_max_age=600
+#     )
+# }
 
 
 # Password validation

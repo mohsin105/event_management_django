@@ -1,12 +1,17 @@
 from django.shortcuts import render,redirect,HttpResponse
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.models import User,Group
-from django.contrib.auth import authenticate,login,logout
+from django.contrib.auth.models import Group
+from django.contrib.auth import authenticate,login,logout,get_user_model
 from django.contrib import messages
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.decorators import login_required,user_passes_test
-from users.forms import ParticipantModelForm,AssignRoleForm,CreateGroupForm
-from events.models import Event
+from users.forms import ParticipantModelForm,AssignRoleForm,CreateGroupForm,EditProfileForm
+from events.models import Event,Category
+from django.views.generic import CreateView,UpdateView,DeleteView,ListView,DetailView,TemplateView
+from django.contrib.auth.mixins import PermissionRequiredMixin,UserPassesTestMixin,LoginRequiredMixin
+from django.urls import reverse_lazy
+
+User=get_user_model()
 # Create your views here.
 
 def is_admin(user):
@@ -33,10 +38,10 @@ def create_participant(request):
             user=participant_form.save(commit=False)
             print(user)
             user.set_password(participant_form.cleaned_data.get('password1'))
-            user.is_active=False
+            # user.is_active=False #uncomment this before deploy
             print(participant_form.cleaned_data)
             user.save()
-            # participant_form.save()
+            participant_form.save() #comment this before deploy
             messages.success(request,"A confirmation mail sent to your email. please check")
             return redirect('sign-in')
         else:
@@ -45,6 +50,23 @@ def create_participant(request):
 
     context={'participant_form':participant_form}
     return render(request,'registration/create_participant.html',context)
+
+class UpdateProfile(UpdateView):
+    model=User
+    template_name='registration/create_participant.html'
+    form_class=EditProfileForm
+    context_object_name='form'
+    pk_url_kwarg='id'
+    success_url=reverse_lazy('user-profile')
+
+    def get_context_data(self, **kwargs):
+        context= super().get_context_data(**kwargs)
+        context['participant_form']=self.get_form()
+        return context
+
+
+
+
 
 # verifying the token
 def activate_user(reqeust,user_id,token):
@@ -116,12 +138,37 @@ def create_group(request):
     
     context={'form':form}
     return render(request,'admin/create_group.html',context)
+"""group_list FBV
 
 @user_passes_test(is_admin,login_url='no-permission')
 def group_list(request):
     groups=Group.objects.prefetch_related('permissions').all()
     context={'groups':groups}
     return render(request,'admin/group_list.html',context)
+"""
+
+class GroupList(UserPassesTestMixin,ListView):
+    model=Group
+    template_name='admin/group_list.html'
+    context_object_name='groups'
+
+    def test_func(self):
+        return is_admin(self.request.user)
+    
+    def get_queryset(self):
+        return Group.objects.prefetch_related('permissions').all()
+
+class CategoryList(UserPassesTestMixin,ListView):
+    model=Category
+    template_name='admin/category_list.html'
+    context_object_name='categories'
+
+
+    def test_func(self):
+        return is_admin(self.request.user)
+    
+    def get_queryset(self):
+        return Category.objects.prefetch_related('event_list').all()
 
 @user_passes_test(is_admin,login_url='no-permission')
 def delete_participant(request,id):
@@ -184,3 +231,20 @@ def user_dashboard(request):
     user=request.user
     context={'user':user}
     return render(request,'dashboard/user_dashboard.html')
+
+class ProfileView(TemplateView):
+    template_name='accounts/profile.html'
+
+    def get_context_data(self, **kwargs):
+        context= super().get_context_data(**kwargs)
+
+        user=self.request.user
+        context['username']=user.username
+        context['email']=user.email
+        context['name']=user.get_full_name()
+        context['member_since']=user.date_joined
+        context['profile_image']=user.profile_image
+        context['phone_number']=user.phone_number
+        context['id']=user.id
+
+        return context

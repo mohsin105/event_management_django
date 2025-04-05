@@ -1,7 +1,10 @@
 from django import forms
 import re
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User,Group,Permission
+from django.contrib.auth.models import Group,Permission
+from django.contrib.auth import get_user_model
+
+User=get_user_model()
 
 
 
@@ -12,7 +15,7 @@ class ParticipantModelForm(forms.ModelForm):
 
     class Meta:
         model=User
-        fields=['username','first_name','last_name','email','password1','confirm_password'] 
+        fields=['username','first_name','last_name','email','profile_image','phone_number','password1','confirm_password'] 
         #by default, only fields that are declared in User model
         # model=Participant
         # fields=['name','email','events']
@@ -80,3 +83,8 @@ class CreateGroupForm(forms.ModelForm):
 class AssignRoleForm(forms.Form):
     role=forms.ModelChoiceField(queryset=Group.objects.all(),
                                 empty_label='Select a role')
+    
+class EditProfileForm(forms.ModelForm):
+    class Meta:
+        model=User
+        fields=['username','first_name','last_name','email','profile_image','phone_number']

@@ -4,22 +4,21 @@
     <div class="text-center w=1/2 mx-auto my-10 border-3 border-black">
         {% if messages %}
             {% for message in messages %}
-            <p>{{message}}</p>
+                <p>{{message}}</p>
             {% endfor %}
-
         {% endif %}
         <div class="w-1/2 mx-auto border-3 border-black">
 
             <form action="" method="POST" >
                 {% csrf_token %}
                 {% for field in participant_form %}
-                <div class="border border-black m-2 p-2">
-                    <label for="{{field.id_for_label}}" class="font-bold">{{field.label}}</label> 
-                    <span class="border border-black w-fit">{{field}}</span>
-                </div>
-            {% endfor %}
+                    <div class="border border-black m-2 p-2">
+                        <label for="{{field.id_for_label}}" class="font-bold">{{field.label}}</label> 
+                        <span class="border border-black w-fit">{{field}}</span>
+                    </div>
+                {% endfor %}
+                <button type="submit" class="mb-5 bg-rose-600 px-3 py-2 text-white mt-2 rounded-md">Submit </button>
             </form>
-            <button type="submit" class="mb-5 bg-rose-600 px-3 py-2 text-white mt-2 rounded-md">Submit </button>
         </div>
     </div>
 {% endblock content %}

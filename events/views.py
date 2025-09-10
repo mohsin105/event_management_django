@@ -96,40 +96,7 @@ def update_event(request,id):
     return render(request,'create_event.html',context)
 
 
-"""organizer_dashboard FBV
-def show_dashboard(request):
-    query_type=request.GET.get('type')
-    events=Event.objects.select_related('category').prefetch_related('participants') #prefetch_related name replaced from 'participant_list'
 
-    event_count=Event.objects.aggregate(total=Count('id',distinct=True),
-                                        upcoming=Count('id',filter=Q(date__gt=date.today()),distinct=True),
-                                        past=Count('id',filter=Q(date__lt=date.today()),distinct=True),
-                                        unique_participants=Count('participants',distinct=True)
-                                        ) #prefetch_related name replaced from 'participant_list'
-
-    if query_type=='total':
-        title='Total Events'
-        events=events.all()
-        
-    elif query_type=='upcoming':
-        title='Upcoming Events'
-        events=events.filter(date__gt=date.today())
-    elif query_type=='past':
-        title='Past Events'
-        events=events.filter(date__lt=date.today())
-    else:
-        upcomingEvents=Event.objects.filter(date__gt=date.today())
-        # getting the most recent upcoming event
-        # events=upcomingEvents.order_by('date')
-        title='Todays Events'
-        events=events.filter(date__exact=date.today())
-        
-    context={
-             'events':events,
-             'title':title,
-             'event_count':event_count}
-    return render(request,'dashboard.html',context)
-"""
 
 
 class OrganizerDashboard(ListView):
@@ -199,21 +166,7 @@ class EventDetails(DetailView):
 """
 
 
-"""delete_event FBV
 
-
-
-@user_passes_test(admin_or_organizer,login_url='no-permission')
-def delete_event(request,id):
-    if request.method=='POST':
-        event=Event.objects.get(id=id)
-        event.delete()
-        messages.success(request,'Event deleted!!')
-        return redirect('dashboard')
-    else:
-        messages.error(request,'Event NOT deleted')
-        return redirect('dashboard')
-"""
 
 class DeleteEvent(UserPassesTestMixin,LoginRequiredMixin,DeleteView):
     login_url='no-permission'
@@ -229,20 +182,7 @@ class DeleteEvent(UserPassesTestMixin,LoginRequiredMixin,DeleteView):
         return super().delete(request, *args, **kwargs)
 
 
-"""delete_category FBV
 
-
-@user_passes_test(admin_or_organizer,login_url='no-permission')
-def delete_category(request,id):
-    if request.method=='POST':
-        category=Category.objects.get(id=id)
-        category.delete()
-        messages.success(request,'Category deleted!!')
-        return redirect('dashboard')
-    else:
-        messages.error(request,'Category NOT deleted')
-        return redirect('dashboard')
-"""
 
 class DeleteCategory(UserPassesTestMixin,LoginRequiredMixin,DeleteView):
     model=Category

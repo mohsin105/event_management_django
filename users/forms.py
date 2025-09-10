@@ -3,6 +3,7 @@ import re
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import Group,Permission
 from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import PasswordChangeForm, PasswordResetForm,SetPasswordForm
 
 User=get_user_model()
 
@@ -88,3 +89,13 @@ class EditProfileForm(forms.ModelForm):
     class Meta:
         model=User
         fields=['username','first_name','last_name','email','profile_image','phone_number']
+
+
+class CustomPasswordChangeForm(PasswordChangeForm):
+    pass
+
+class CustomPasswordResetForm(PasswordResetForm):
+    pass
+
+class CustomPasswordResetConfirmForm(SetPasswordForm):
+    pass

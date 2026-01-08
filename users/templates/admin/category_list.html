@@ -1,23 +1,38 @@
 {% extends "base.html" %}
 {% block content %}
-    <h2 class="text-2xl font-bold mb-4">Groups and Permissions</h2>
-    {% for category in categories %}
-        <div>
-            <div class='grid grid-cols-2'>
+    <h2 class="text-4xl font-bold mb-4 text-center">Categories and Related Events</h2>
+    <div class="w-3/4 mx-auto p-4 bg-sky-50 shadow-xl rounded-md">
+        {% for category in categories %}
+            <div class="grid grid-cols-12 gap-4 border-gray-400 my-8 shadow-md p-4">
 
-                <p><b>{{category.name}}</b></p>
-                <form action="{% url 'delete-category' category.id %}" method="POST">
-                    {% csrf_token %}
-                    <button type="submit">Delete</button>
-                </form>
+                <div class="col-span-4 bg-violet-300 rounded-md">
+                    <img src="" alt="Image Here">
+                </div>
+                <div class="col-span-8 border-l-2 border-black p-4">
+                    <div class='grid grid-cols-2'>
+        
+                        <p><b class="text-lg">{{category.name}}</b></p>
+                        <form action="{% url 'delete-category' category.id %}" method="POST">
+                            {% csrf_token %}
+                            <button 
+                                type="submit" 
+                                class="px-2 py-2 bg-red-300 border rounded-md ">
+                                Delete
+                            </button>
+                        </form>
+                    </div>
+                    <div class="bg-white rounded-md pl-4 my-2">
+
+                        <ul>
+                            <p class="font-semibold">Events: </p>
+                            {% for event in category.event_list.all %}
+                                <li>{{event.name}}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
             </div>
-            <ul>
-
-                {% for event in category.event_list.all %}
-                    <li>{{event.name}}</li>
-                {% endfor %}
-            </ul>
-        </div>
-    {% endfor %}
+        {% endfor %}
+    </div>
 
 {% endblock content %}

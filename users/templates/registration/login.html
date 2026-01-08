@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 {% block title %}Log In{% endblock title %}
 {% block content %}
+
+<div class="w-1/2 mx-auto p-8 border-gray-400 border-2 rounded-md bg-sky-100">
+    <h1 class="text-3xl font-bold text-center my-8">Welcome Back, Sign In</h1>
     <div>
         {% comment %} for non-field errors {% endcomment %}
         {% comment %} {% if form.non_field_errors %}
@@ -19,9 +22,24 @@
     <div>
         <form action="" method="POST">
             {% csrf_token %}
-            {{form.as_p}}
-            <button type="submit">Submit</button>
+            {% comment %} {{form.as_p}} {% endcomment %}
+             {% for field in form %}
+                <div>
+                    <label for="{{field.id_for_label}}">{{field.label}}</label>
+                    <div>
+                        {{field}}
+                    </div>
+                </div>
+             {% endfor %}
+            <button 
+                type="submit"
+                class="bg-cyan-400 p-2 border-2 rounded-md w-full "
+                >Sign In
+            </button>
         </form>
-        <a href='{% url "password-reset" %}'>Forgot Password?</a>
+        <button class="bg-red-500 p-2 border-2 rounded-md my-2">
+            <a href='{% url "password-reset" %}'>Forgot Password?</a>
+        </button>
     </div>
+</div>
 {% endblock content %}

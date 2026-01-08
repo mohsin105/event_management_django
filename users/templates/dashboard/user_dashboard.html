@@ -2,38 +2,50 @@
 {% block title %}User Dashboard{% endblock title %}
 {% block content %}
 
-<div class="w-1/2 mx-auto border-2 border-black p-5 rounded-sm">
-    <h2>Hello {{user.first_name}} {{user.last_name}}</h2>
-    <p class="text-2xl">Events you have registered to </p>
+<div class="min-w-1/2 w-fit  mx-auto border-2 border-black p-5 rounded-sm">
+    <h2 class="font-bold">Hello {{user.first_name}} {{user.last_name}}</h2>
+    <p class="text-2xl font-semibold">Events you have registered to </p>
+    <div class="grid grid-cols-4 gap-1 text-sm mt-2 border-2 my-6 p-2 rounded-lg shadow-xl  bg-green-200">
+        <div>Event Name</div>
+        <div>Category </div>
+        <div>Participants</div>
+        <div class="flex justify-around">
+            <div>Date</div>
+            <div class="">More</div>
+        </div>
+    </div>
     {% for event in user.rsvp_events.all %}
-        <div class="grid grid-cols-4 gap-2 text-sm mt-2 border my-6 p-2">
+        <div class="grid grid-cols-4 gap-1 text-sm mt-2 border-2 my-6 p-2 rounded-lg shadow-xl ">
 
             <div class="flex items-center gap-1">
-            <div class="list_style w-1 h-1 bg-green-600 rounded-full "></div>
-            <p class="font-semibold">{{event.name}}</p>
+                <div class="list_style w-1 h-1 bg-green-600 rounded-full "></div>
+                <p class="font-semibold">{{event.name}}</p>
             </div>
             <div class="flex items-center">
-            <div class=" bg-blue-200 w-fit p-1 rounded-md ">
-                <p>{{event.category}}</p>
-
-            </div>
+                <div class=" bg-blue-200 w-fit p-1 rounded-md ">
+                    <p>{{event.category}}</p>
+                </div>
             </div>
             <div class="flex gap-1 text-center -space-x-3 text-white">
-            
                 <div class="list_style w-6 h-6 bg-green-600 rounded-full border border-white self-center flex items-center justify-center ">
                     <p >{{event.participants.all.count}}</p>
                 </div>
-                
-                
             </div>
             <div class="flex items-center gap-3">
+                
+                <div class="flex items-center">
+                    <p class="font-bold">{{event.date}}</p>
+                </div>
+                <button class="border-2 px-4 py-2 bg-slate-500 rounded-md">
+                    <a href="{% url 'details' event.id %}">Details</a>
+                </button>
+                <button class="border-2 px-4 py-2 bg-cyan-400 rounded-md">
+                    <a href="{% url 'update-event' event.id %}">Update</a>
+                </button>
 
-                <p>{{event.date}}</p>
-                <a href="{% url 'details' event.id %}">Details</a>
-                <a href="{% url 'update-event' event.id %}">Update</a>
                 <form action="{% url 'delete-event' event.id %}" method="POST">
                     {% csrf_token %}
-                    <button type="submit">Delete</button>
+                    <button type="submit" class="border-2 px-4 py-2 bg-red-400 rounded-md">Delete</button>
                 </form>
             </div>
         </div>

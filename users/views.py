@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate,login,logout,get_user_model
 from django.contrib import messages
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.decorators import login_required,user_passes_test
-from users.forms import ParticipantModelForm,AssignRoleForm,CreateGroupForm,EditProfileForm, CustomPasswordChangeForm, CustomPasswordResetForm, CustomPasswordResetConfirmForm
+from users.forms import ParticipantModelForm,AssignRoleForm,CreateGroupForm,EditProfileForm, CustomPasswordChangeForm, CustomPasswordResetForm, CustomPasswordResetConfirmForm, CustomLoginForm
 from events.models import Event,Category
 from django.views.generic import CreateView,UpdateView,DeleteView,ListView,DetailView,TemplateView
 from django.contrib.auth.mixins import PermissionRequiredMixin,UserPassesTestMixin,LoginRequiredMixin
@@ -84,9 +84,9 @@ def activate_user(reqeust,user_id,token):
 
 
 def sign_in(request):
-    form=AuthenticationForm()
+    form=CustomLoginForm()
     if request.method=='POST':
-        form=AuthenticationForm(data=request.POST)
+        form=CustomLoginForm(data=request.POST)
         if form.is_valid():
             user=form.get_user()
             login(request,user)
@@ -214,11 +214,20 @@ def dashboard(request):
 
 def admin_dashboard(request):
     query_type=request.GET.get('type')
+    group_count = Group.objects.all().count()
+    category_count = Category.objects.all().count()
+    
     if query_type=='participants':
         contents=User.objects.all()
     else:
-        contents=Event.objects.all()
-    context={'contents':contents}
+        contents=Event.objects.prefetch_related('participants').all()
+    
+    context={
+        'contents':contents,
+        'group_count':group_count,
+        'category_count':category_count
+        }
+    print('Admin Dashboard context: ',contents)
     return render(request,'admin/admin_dashboard.html',context)
 
 def user_dashboard(request):

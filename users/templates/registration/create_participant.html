@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-    <h1 class="text-3xl text-center">Enroll a participant</h1>
+    <h1 class="text-3xl text-center font-semibold">Enroll a participant</h1>
     <div class="text-center w=1/2 mx-auto my-10 border-3 border-black">
         {% if messages %}
             {% for message in messages %}
@@ -12,7 +12,7 @@
             <form action="" method="POST" >
                 {% csrf_token %}
                 {% for field in participant_form %}
-                    <div class="border border-black m-2 p-2">
+                    <div class=" border border-black m-2 p-2">
                         <label for="{{field.id_for_label}}" class="font-bold">{{field.label}}</label> 
                         <span class="border border-black w-fit">{{field}}</span>
                     </div>

@@ -1,0 +1,6 @@
+While first initiating the project in new pc/platform, 
+    -first, create superuser. 
+    -create category
+    - create event. 
+- Register/Sign-UP and Creating a new Participant is the same thing here. 
+- Sign-Up is done using full-custom form. Not using Authentication Form in any way. 

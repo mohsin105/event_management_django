@@ -1,43 +1,42 @@
 {% extends "base.html" %}
 {% block content %}
-<section class='grid grid-cols-2 text-center w-4/5 mx-auto rounded-lg p-5'>
-    <div >
-        <p><a href="{% url 'user-dashboard' %}" title='User Dashboard'>Your Events</a></p>
-        <p><a href="{% url 'update-profile' id %}">Update Profile</a></p>
-        <p><a href="{% url "password-change" %}">Change Password</a></p>
-    </div>
-    <div class=' bg-cyan-100'>
-        <div class="m-3">
-            <h1 class="text-3xl my-2">{{name}}</h1>
-            <h4 class="text-xl">{{username}}</h4>
-            <h4 class="text-xl">{{email}}</h4>
-            <div>
-                {% if profile_image %}
-                <img
-                src="{{profile_image.url}}"
-                alt="Profile Image here 1"
-                class="w-full rounded-lg"
-                />
-                {% endif %}
-            </div>
-{% comment %}  {% endcomment %}
-        </div>
-        <div class="flex justify-evenly m-4">
 
-            <h3 class="bg-violet-600 p-2 text-white rounded-md">
-                Phone Number: {{phone_number}}
-            </h3>
-            <div class="bg-violet-600 p-2 text-white rounded-md"></div>
-            <div class="bg-violet-600 p-2 text-white rounded-md">
-                Member Since:  {{member_since}}
+    
+    <div class=' bg-cyan-100  '>
+        <div class="grid grid-cols-2 text-center w-4/5 mx-auto border-2 rounded-lg p-5">
+            <div>
+                    {% if profile_image %}
+                    <img
+                        src="{{profile_image.url}}"
+                        alt="Profile Image here 1"
+                        class="w-fit rounded-lg"
+                    />
+                    {% endif %}
+            </div>
+            <div class="m-3">
+                <h1 class="text-3xl my-2">{{name}}</h1>
+                <h4 class="text-xl">username: {{username}}</h4>
+                <h4 class="text-xl">Email: {{email}}</h4>
+                <div class="flex justify-evenly m-4">
+                    <h3 class="bg-violet-600 p-2 text-white rounded-md">
+                        Phone Number: {{phone_number}}
+                    </h3>
+                    <div class="bg-violet-600 p-2 text-white rounded-md"></div>
+                    <div class="bg-violet-600 p-2 text-white rounded-md">
+                        Member Since:  {{member_since}}
+                    </div>
+                </div>
             </div>
         </div>
-        <div>
+{% comment %}  {% endcomment %}
+        {% comment %} </div> {% endcomment %}
+        
+        {% comment %} <div>
             
             <p></p>
-        </div>
+        </div> {% endcomment %}
 
     </div>
 
-</section>
+
 {% endblock content %}

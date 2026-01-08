@@ -9,14 +9,28 @@
     {% comment %} <link rel="stylesheet" href="{% static 'css/style.css' %}"> {% endcomment %}
     <link rel="stylesheet" href="{% static 'css/output.css' %}">
 </head>
-    <body>
+<body>
+    {% comment %} NavBar Section {% endcomment %}
+    {% if user.is_authenticated %}
+        {% include "logged_nav.html" %}
+    {% else %}
+        {% include "non_logged_nav.html" %}
+    {% endif %}
+    {% comment %} Sidebar and Main Content {% endcomment %}
+    <section class='grid grid-cols-12 mb-8 '>
+
         {% if user.is_authenticated %}
-            {% include "logged_nav.html" %}
-        {% else %}
-            {% include "non_logged_nav.html" %}
+        <div class="col-span-2 ">
+                {% include "sidebar.html" %}
+            </div>
         {% endif %}
-        {% block content %}
-        
-        {% endblock content %}
-    </body>
+        <div class="{% if user.is_authenticated %}col-span-10{% else %}col-span-12{% endif %}">
+            {% block content %}
+            
+            {% endblock content %}
+        </div>
+    </section>
+    {% comment %} Footer {% endcomment %}
+        {% include "footer.html" %}
+</body>
 </html>

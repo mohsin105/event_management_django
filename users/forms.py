@@ -4,7 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import Group,Permission
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import PasswordChangeForm, PasswordResetForm,SetPasswordForm
-
+from django.contrib.auth.forms import AuthenticationForm
 User=get_user_model()
 
 
@@ -90,6 +90,25 @@ class EditProfileForm(forms.ModelForm):
         model=User
         fields=['username','first_name','last_name','email','profile_image','phone_number']
 
+class CustomLoginForm(AuthenticationForm):
+    def __init__(self, request = ..., *args, **kwargs):
+        super().__init__(request, *args, **kwargs)
+        self.fields['username'].widget.attrs.update(
+            {
+                'class':'border w-full my-2 p-4 rounded-md',
+                'placeholder':'username',
+                "autofocus": True
+            }
+        )
+        self.fields['password'].widget.attrs.update(
+            {
+                "autocomplete": "current-password",
+                'placeholder':'password',
+                'class':'border w-full my-2 p-4 rounded-md'
+            }
+        )
+    
+    
 
 class CustomPasswordChangeForm(PasswordChangeForm):
     pass

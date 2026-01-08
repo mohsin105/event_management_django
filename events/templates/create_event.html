@@ -1,21 +1,49 @@
 {% extends "base.html" %}
 {% block title %}create event{% endblock title %}
 {% block content %}
-    <h1>Event creation form page</h1>
+<section class="p-4 w-3/4 mx-auto bg-violet-100">
+
+    <h1 class="text-center text-3xl font-bold">Event creation form page</h1>
     {% if messages %}
         {% for message in messages %}
-        <p>{{message}}</p>
+        <p class="text-red text-center font-bold p-1 border-red-700 bg-blue-400 rounded-md">{{message}}</p>
         {% endfor %}
     {% endif %}
-    <div class="w-1/2 mx-auto mt-8">
+    <div class="w-fit mx-auto mt-8 border-2 border-black p-4">
         
         <form action="" method="POST" enctype="multipart/form-data">
             {% csrf_token %}
-            <div class="border">{{event_form.as_p}}</div>
+            <div class="border">
+                {% comment %} {{event_form.as_p}} {% endcomment %}
+                {% for field in event_form %}
+                    <div class="grid grid-cols-3 gap-1">
+                        <label for="{{field.id_for_label}}" 
+                            class="font-bold col-span-1">
+                            {{field.label}}
+                        </label>
+                        <div class="col-span-2">
+                            {{field}}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
 
-            
-            <button type="submit" class="mb-5 bg-rose-600 px-3 py-2 text-white mt-2 rounded-md">Submit</button>
-            <p class="font-bold text-red-700">Cannot find your participant? <a href="{% url 'create-participant' %}" class="text-blue-600">Create participant here at first</a></p>
+            <div class="flex justify-end">
+
+                <button 
+                    type="submit" 
+                    class="mb-5 bg-rose-600 px-3 py-2 text-white mt-2 rounded-md "
+                    >
+                    Submit
+                </button>
+            </div>
+            <p class="font-bold text-red-700">
+                Cannot find your participant? 
+                <a href="{% url 'create-participant' %}" class="text-blue-600">
+                    Create participant here at first
+                </a>
+            </p>
         </form>
     </div>
+</section>
 {% endblock content %}

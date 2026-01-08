@@ -2,13 +2,15 @@
 {% block title %}Dashboard{% endblock title %}
 {% block content %}
     {% comment %} Stats grid section {% endcomment %}
-    <section class="progress grid grid-cols-2 sm:grid-cols-4 gap-4">
+    <section class="progress grid grid-cols-2 sm:grid-cols-4 gap-4 p-8">
         <a href="{% url 'organizer-dashboard' %}?type=participants">
-            <div class="progress_card bg-white p-2 rounded-lg border border-black">
-                <h3 class="card_heading text-sm mb-2">Total Participants</h3>
+            <div class="progress_card bg-white p-4 rounded-lg border-2 border-black shadow-xl">
+                <h3 class="card_heading text-sm mb-2 font-bold">Total Participants</h3>
                 <div class="card_body flex justify-between">
                     <div class="text_side">
-                        <p class="text-xl font-semibold">{{event_count.unique_participants}}</p>
+                        <div class="text-xl font-semibold border rounded-full size-8 text-center">
+                            {{event_count.unique_participants}}
+                        </div>
                         
                     </div>
                     <div class="icon_side w-7  flex justify-center ">
@@ -21,11 +23,13 @@
             </div>
         </a>
         <a href="{% url 'organizer-dashboard' %}?type=total">
-            <div class="progress_card bg-white p-2 rounded-lg border border-black">
-                <h3 class="card_heading text-sm mb-2">Total Events</h3>
+            <div class="progress_card bg-white p-4 rounded-lg border-2 border-black shadow-xl">
+                <h3 class="card_heading text-sm mb-2 font-bold">Total Events</h3>
                 <div class="card_body flex justify-between">
                     <div class="text_side">
-                        <p class="text-xl font-semibold">{{event_count.total}}</p>
+                        <p class="text-xl font-semibold border rounded-full size-8 text-center">
+                            {{event_count.total}}
+                        </p>
                         
                     </div>
                     <div class="icon_side w-7  flex justify-center ">
@@ -39,11 +43,13 @@
             </div>
         </a>
         <a href="{% url 'organizer-dashboard' %}?type=upcoming">
-            <div class="progress_card bg-white p-2 rounded-lg border border-black ">
-                <h3 class="card_heading text-sm mb-2">Upcoming Events</h3>
+            <div class="progress_card bg-white p-4 rounded-lg border-2 border-black shadow-xl ">
+                <h3 class="card_heading text-sm mb-2 font-bold">Upcoming Events</h3>
                 <div class="card_body flex justify-between">
                     <div class="text_side">
-                        <p class="text-xl font-semibold">{{event_count.upcoming}}</p>
+                        <p class="text-xl font-semibold size-8 border rounded-full text-center">
+                            {{event_count.upcoming}}
+                        </p>
                         
                     </div>
                     <div class="icon_side w-7  flex justify-center ">
@@ -57,11 +63,13 @@
             </div>
         </a>
         <a href="{% url 'organizer-dashboard' %}?type=past">
-            <div class="progress_card bg-white p-2 rounded-lg border border-black ">
-                <h3 class="card_heading text-sm mb-2">Past Events</h3>
+            <div class="progress_card bg-white p-4 rounded-lg border-2 border-black shadow-xl ">
+                <h3 class="card_heading text-sm mb-2 font-bold">Past Events</h3>
                 <div class="card_body flex justify-between">
                     <div class="text_side">
-                        <p class="text-xl font-semibold">{{event_count.past}}</p>
+                        <p class="text-xl font-semibold size-8 rounded-full border text-center">
+                            {{event_count.past}}
+                        </p>
                         
                     </div>
                     <div class="icon_side w-7  flex justify-center ">

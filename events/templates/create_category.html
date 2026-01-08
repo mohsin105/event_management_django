@@ -1,19 +1,39 @@
 {% extends "base.html" %}
 {% block title %}Create Category{% endblock title %}
 {% block content %}
-    <h1>Create a New Category!!</h1>
-    <div>
-        {% if messages %}
-            {% for message in messages %}
-                <p>{{message}}</p>
-            {% endfor %}
-        {% endif %}
-        <div class="border text-center">
-            <form action="" method="POST">
-                {% csrf_token %}
-                {{category_form.as_p}}
-                <button type="submit" class="bg-violet-600 text-white p-2">Submit</button>
-            </form>
+<div class="bg-lime-50 h-screen">
+    <div class="w-3/4 mx-auto my-4 border-2 border-black">
+
+        <h1 class="font-bold text-3xl text-center">Create a New Category!!</h1>
+        <div class="w-2/3 mx-auto my-4 border-2 border-black p-4">
+            {% if messages %}
+                {% for message in messages %}
+                    <p 
+                        class="w-full bg-blue-800 text-white p-2 border-2 border-blue-950 my-2"
+                        >{{message}}
+                    </p>
+                {% endfor %}
+            {% endif %}
+            <div class=" text-center">
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    {% for field in category_form %}
+                        <div>
+                            {% comment %} <label for="{{field.id_for_label}}">{{field.label}}</label> {% endcomment %}
+                            <div>
+                                {{field}}
+                            </div>
+                        </div>
+                    {% endfor %}
+                    {% comment %} {{category_form.as_p}} {% endcomment %}
+                    <button 
+                        type="submit" 
+                        class="bg-violet-600 text-white p-2 w-full rounded-md"
+                        >Submit
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
+</div>
 {% endblock content %}

@@ -1,6 +1,6 @@
 from django.urls import path
-from users.views import create_participant,sign_in,sign_out,activate_user,assign_role,delete_participant,create_group,rsvp_to_events,admin_dashboard,show_participants,user_dashboard,rsvp_to_events,CategoryList,GroupList,ProfileView,UpdateProfile, ChangePassword, CustomPasswordResetView, CustomPasswordResetConfirmView
-from events.views import DeleteCategory,OrganizerDashboard
+from users.views import create_participant,sign_in,sign_out,activate_user,assign_role,delete_participant,create_group,rsvp_to_events,admin_dashboard,show_participants,user_dashboard,rsvp_to_events,GroupList,ProfileView,UpdateProfile, ChangePassword, CustomPasswordResetView, CustomPasswordResetConfirmView,UpdateGroup,delete_group,OrganizerDashboard
+from events.views import DeleteCategory,CategoryList
 from django.contrib.auth.views import  PasswordChangeDoneView
 
 
@@ -15,6 +15,8 @@ urlpatterns = [
     path('delete-event/<int:id>',delete_participant,name='delete-participant'),
     
     path('admin/group-list/',GroupList.as_view(),name='group-list'),
+    path('admin/update-group/<int:group_id>/',UpdateGroup.as_view(), name='update-group'),
+    path('admin/delete-group/<int:group_id>/', delete_group, name='delete-group'),
     path('admin/dashboard/',admin_dashboard,name='admin-dashboard'),
     path('admin/user-list/',show_participants,name='user-list'),
     

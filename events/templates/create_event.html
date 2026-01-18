@@ -1,38 +1,40 @@
 {% extends "base.html" %}
 {% block title %}create event{% endblock title %}
 {% block content %}
-<section class="p-4 w-3/4 mx-auto bg-violet-100">
+<section class="p-4 w-1/2 mx-auto bg-violet-50">
 
-    <h1 class="text-center text-3xl font-bold">Event creation form page</h1>
+    <h1 class="text-center text-3xl font-bold">Create a New Event</h1>
     {% if messages %}
         {% for message in messages %}
-        <p class="text-red text-center font-bold p-1 border-red-700 bg-blue-400 rounded-md">{{message}}</p>
+        <p class="text-red text-center font-bold p-1 border-red-700 bg-blue-400 rounded-md">
+            {{message}}
+        </p>
         {% endfor %}
     {% endif %}
-    <div class="w-fit mx-auto mt-8 border-2 border-black p-4">
+    <div class="mt-8 border-2 border-black p-4">
         
         <form action="" method="POST" enctype="multipart/form-data">
             {% csrf_token %}
-            <div class="border">
+            <div>
                 {% comment %} {{event_form.as_p}} {% endcomment %}
                 {% for field in event_form %}
-                    <div class="grid grid-cols-3 gap-1">
+                    <div class="">
                         <label for="{{field.id_for_label}}" 
-                            class="font-bold col-span-1">
+                            class="font-bold ">
                             {{field.label}}
                         </label>
-                        <div class="col-span-2">
+                        <div class="">
                             {{field}}
                         </div>
                     </div>
                 {% endfor %}
             </div>
 
-            <div class="flex justify-end">
+            <div >
 
                 <button 
                     type="submit" 
-                    class="mb-5 bg-rose-600 px-3 py-2 text-white mt-2 rounded-md "
+                    class="w-full my-4  p-4 bg-rose-600 text-white font-bold text-xl rounded-md "
                     >
                     Submit
                 </button>

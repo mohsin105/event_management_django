@@ -48,6 +48,24 @@ def create_event(request):
     context={ 'event_form':event_form}
     return render(request,'create_event.html',context)
 
+class EventList(ListView):
+    pass
+    # events=Event.objects.select_related('category').prefetch_related('participants').all()
+    # if request.method=="POST":
+    #     search_value = request.POST.get('search')
+    #     search_type = request.POST.get('search_type')
+    #     print(search_value)
+    #     print('Search Type: ', search_type)
+    #     if search_type=="category":
+    #         print('inside category search')
+    #         events=events.filter(category__name__icontains=search_value)
+    #     else:
+    #         events=events.filter(name__icontains=search_value)
+            
+    # context={
+    #     'events':events
+    # }
+
 @user_passes_test(admin_or_organizer,login_url='no-permission')
 def create_category(request):
     category_form=CategoryModelForm()
@@ -57,15 +75,58 @@ def create_category(request):
         if category_form.is_valid():
             category_form.save()
             messages.success(request,'Category created successfully!')
-            context={'category_form':category_form}
+            context={
+                'form':category_form,
+                'title':'Create A New Category'
+            }
             return redirect('create-category')
         else:
             messages.error(request,'Properly fill up the form!')
             return redirect('create-category')
     
-    context={'category_form':category_form}
+    context={
+        'form':category_form,
+        'title':'Create A New Category'
+        }
     return render(request,'create_category.html',context)
 
+class UpdateCategory(UpdateView):
+    model = Category
+    form_class=CategoryModelForm
+    pk_url_kwarg='category_id'
+    context_object_name='form'
+    template_name='create_category.html'
+    success_url=reverse_lazy('create-category')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Update Category'
+    #     current_obj = self.get_object()
+    #     print(current_obj)
+    #     context['category_form'] = CategoryModelForm(instance=current_obj)
+        return context
+
+    def form_valid(self, form):
+        # category_name = form.cleaned_data.get('name')
+        # does_exist = Category.objects.filter(name = category_name).exists()
+        # if does_exist:
+        #     messages.error(self.request,"Category with same name already exists")
+        #     return render(self.request, 'create_category.html', self.get_context_data())
+        messages.success(self.request,"Category Updated Successfully!!!")
+        return super().form_valid(form)
+    
+
+class CategoryList(UserPassesTestMixin,ListView):
+    model=Category
+    template_name='admin/category_list.html'
+    context_object_name='categories'
+
+
+    def test_func(self):
+        return is_admin(self.request.user)
+    
+    def get_queryset(self):
+        return Category.objects.prefetch_related('event_list').all()
 
 @user_passes_test(admin_or_organizer,login_url='no-permission')
 def update_event(request,id):
@@ -99,49 +160,7 @@ def update_event(request,id):
 
 
 
-class OrganizerDashboard(ListView):
-    model=Event
-    template_name='dashboard.html'
-    context_object_name='events'
 
-
-    def get_context_data(self, **kwargs):
-        context= super().get_context_data(**kwargs)
-        query_type=self.request.GET.get('type')
-
-        event_count=Event.objects.aggregate(total=Count('id',distinct=True),
-                                        upcoming=Count('id',filter=Q(date__gt=date.today()),distinct=True),
-                                        past=Count('id',filter=Q(date__lt=date.today()),distinct=True),
-                                        unique_participants=Count('participants',distinct=True)
-                                        ) 
-        context['event_count']=event_count
-
-        if query_type=='total':
-            context['title']='Total Events'
-        elif query_type=='upcoming':
-            context['title']='Upcoming Events'
-        elif query_type=='upcoming':
-            context['title']='Upcoming Events'
-        elif query_type=='past':
-            context['title']='Past Events'
-        else:
-            context['title']='Todays Events'
-        return context
-    
-    def get_queryset(self):
-        query_type=self.request.GET.get('type')
-        events=Event.objects.select_related('category').prefetch_related('participants')
-        if query_type=='total':
-            events=events.all()
-        
-        elif query_type=='upcoming':
-            events=events.filter(date__gt=date.today())
-        elif query_type=='past':
-            events=events.filter(date__lt=date.today())
-        else:
-            upcomingEvents=Event.objects.filter(date__gt=date.today())
-            events=events.filter(date__exact=date.today())
-        return events
 
 def show_details(request,id): #prefetch_related name replaced from 'participant_list'
     event=Event.objects.prefetch_related('participants').get(id=id)

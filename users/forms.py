@@ -11,8 +11,18 @@ User=get_user_model()
 
 class ParticipantModelForm(forms.ModelForm):
     #manually declaring new form fields
-    password1=forms.CharField(widget=forms.PasswordInput)
-    confirm_password=forms.CharField(widget=forms.PasswordInput)
+    password1=forms.CharField(widget=forms.PasswordInput(
+        attrs={
+            'placeholder':'Enter Password',
+            'class':'w-full p-4 my-2 border-2 rounded-md border-gray-400'
+        }
+    ))
+    confirm_password=forms.CharField(widget=forms.PasswordInput(
+        attrs={
+            'placeholder':'Enter password again',
+            'class':'w-full p-4 my-2 border-2 rounded-md border-gray-400'
+        }
+    ))
 
     class Meta:
         model=User
@@ -22,6 +32,39 @@ class ParticipantModelForm(forms.ModelForm):
         # fields=['name','email','events']
 
         # widgets={'events':forms.CheckboxSelectMultiple(attrs={'class':'border border-3'})}
+        widgets={
+            'username':forms.TextInput(
+                attrs={
+                    'placeholder':'Username',
+                    'class':'w-full p-4 my-2 border-2 rounded-md border-gray-400'
+                }
+            ),
+            'first_name':forms.TextInput(
+                attrs={
+                    'placeholder':'First Name',
+                    'class':'w-full p-4 my-2 border-2 rounded-md border-gray-400'
+                }
+            ),
+            'last_name':forms.TextInput(
+                attrs={
+                    'placeholder':'Last Name',
+                    'class':'w-full p-4 my-2 border-2 rounded-md border-gray-400'
+                }
+            ),
+            'email':forms.EmailInput(
+                attrs={
+                    'placeholder':'demo@gmail.com',
+                    'class':'w-full p-4 my-2 border-2 rounded-md border-gray-400'
+                }
+            ),
+            'phone_number':forms.TextInput(
+                attrs={
+                    'placeholder':'Phone Number',
+                    'class':'w-full p-4 my-2 border-2 rounded-md border-gray-400'
+                }
+            ),
+            
+        }
     
     # Error validation for field-error
     def clean_password1(self):
@@ -80,6 +123,20 @@ class CreateGroupForm(forms.ModelForm):
         model=Group
         fields=['name','permissions']
 
+        widgets = {
+            'name':forms.TextInput(
+                attrs={
+                    'placeholder':'Group Name',
+                    'class':'w-full p-4 my-2 border-2 border-gray-400 rounded-md shadow-md'
+                }
+            ),
+            'permissions':forms.CheckboxSelectMultiple(
+                attrs={
+                    'class':'w-full p-4 my-2 border-2 rounded-md'
+                }
+            )
+        }
+
 
 class AssignRoleForm(forms.Form):
     role=forms.ModelChoiceField(queryset=Group.objects.all(),
@@ -89,6 +146,40 @@ class EditProfileForm(forms.ModelForm):
     class Meta:
         model=User
         fields=['username','first_name','last_name','email','profile_image','phone_number']
+
+        widgets={
+            'username':forms.TextInput(
+                attrs={
+                    'placeholder':'Username',
+                    'class':'w-full p-4 my-2 border-2 border-gray-400 rounded-md shadow-md'
+                }
+            ),
+            'first_name':forms.TextInput(
+                attrs={
+                    'placeholder':'first_name',
+                    'class':'w-full p-4 my-2 border-2 border-gray-400 rounded-md shadow-md'
+                }
+            ),
+            'last_name':forms.TextInput(
+                attrs={
+                    'placeholder':'Last Name',
+                    'class':'w-full p-4 my-2 border-2 border-gray-400 rounded-md shadow-md'
+                }
+            ),
+            'email':forms.EmailInput(
+                attrs={
+                    'placeholder':'demo@gmail.com',
+                    'class':'w-full p-4 my-2 border-2 border-gray-400 rounded-md shadow-md',
+                }
+            ),
+            
+            'phone_number':forms.TextInput(
+                attrs={
+                    'placeholder':'Phone Number',
+                    'class':'w-full p-4 my-2 border-2 border-gray-400 rounded-md shadow-md'
+                }
+            )
+        }
 
 class CustomLoginForm(AuthenticationForm):
     def __init__(self, request = ..., *args, **kwargs):
@@ -115,6 +206,14 @@ class CustomPasswordChangeForm(PasswordChangeForm):
 
 class CustomPasswordResetForm(PasswordResetForm):
     pass
+    # def __init__(self, data = ..., files = ..., auto_id = ..., prefix = ..., initial = ..., error_class = ..., label_suffix = ..., empty_permitted = ..., field_order = ..., use_required_attribute = ..., renderer = ...):
+    #     super().__init__(data, files, auto_id, prefix, initial, error_class, label_suffix, empty_permitted, field_order, use_required_attribute, renderer)
+    #     self.fields['email'].widget.attrs.update(
+    #         {
+    #             'placeholder':'Enter Your Email',
+    #             'class':'w-full p-4 my-2 border-2 rounded-md border-gray-400'
+    #         }
+    #     )        
 
 class CustomPasswordResetConfirmForm(SetPasswordForm):
     pass

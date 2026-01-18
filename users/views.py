@@ -11,10 +11,12 @@ from django.views.generic import CreateView,UpdateView,DeleteView,ListView,Detai
 from django.contrib.auth.mixins import PermissionRequiredMixin,UserPassesTestMixin,LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.contrib.auth.views import PasswordChangeView, PasswordResetView,PasswordResetConfirmView
+from datetime import date
+from django.db.models import Q,Count
 
 User=get_user_model()
-# Create your views here.
 
+# Role Control Functions ------------> 
 def is_admin(user):
     return user.groups.filter(name='Admin').exists()
 
@@ -29,6 +31,8 @@ def is_participant(user):
 def admin_or_organizer(user):
     return is_admin(user) or is_organizer(user)
 
+# USER Model CRUD and Auth ---------> 
+
 #sign-up user
 def create_participant(request):
     participant_form=ParticipantModelForm()
@@ -37,7 +41,7 @@ def create_participant(request):
         participant_form=ParticipantModelForm(request.POST)
         if participant_form.is_valid():
             user=participant_form.save(commit=False)
-            print(user)
+            # print(user)
             user.set_password(participant_form.cleaned_data.get('password1'))
             # user.is_active=False #uncomment this before deploy
             print(participant_form.cleaned_data)
@@ -49,7 +53,10 @@ def create_participant(request):
             messages.error(request,'Properly fill up the form!')
             return redirect('create-participant')
 
-    context={'participant_form':participant_form}
+    context={
+        'participant_form':participant_form,
+        'form_title':'Register a New Participant'
+    }
     return render(request,'registration/create_participant.html',context)
 
 class UpdateProfile(UpdateView):
@@ -63,6 +70,7 @@ class UpdateProfile(UpdateView):
     def get_context_data(self, **kwargs):
         context= super().get_context_data(**kwargs)
         context['participant_form']=self.get_form()
+        context['form_title']='Update Profile'
         return context
 
 
@@ -126,6 +134,7 @@ def show_participants(request):
     context={'users':users}
     return render(request,'admin/user_list.html',context)
 
+# GROUP Model CRUD --------> 
 
 @user_passes_test(is_admin,login_url='no-permission')
 def create_group(request):
@@ -137,7 +146,11 @@ def create_group(request):
             messages.success(request,f'Group {group.name} created successfully')
             return redirect('create-group')
     
-    context={'form':form}
+    context={
+        'form':form,
+        'title':'Create New Group',
+        'submit_text':'Create Group'
+        }
     return render(request,'admin/create_group.html',context)
 
 
@@ -152,17 +165,29 @@ class GroupList(UserPassesTestMixin,ListView):
     def get_queryset(self):
         return Group.objects.prefetch_related('permissions').all()
 
-class CategoryList(UserPassesTestMixin,ListView):
-    model=Category
-    template_name='admin/category_list.html'
-    context_object_name='categories'
-
+class UpdateGroup(UserPassesTestMixin,UpdateView):
+    model=Group
+    form_class=CreateGroupForm
+    template_name='admin/create_group.html'
+    pk_url_kwarg='group_id'
+    success_url=reverse_lazy('group-list')
+    context_object_name='form'
 
     def test_func(self):
         return is_admin(self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context= super().get_context_data(**kwargs)
+        context['title'] = 'Update Group'
+        context['submit_text'] = 'Update'
+        return context
+
+    def form_valid(self, form):
+        messages.success(self.request, "Group Updated Successfully!!!")
+        return super().form_valid(form)
     
-    def get_queryset(self):
-        return Category.objects.prefetch_related('event_list').all()
+
+
 
 @user_passes_test(is_admin,login_url='no-permission')
 def delete_participant(request,id):
@@ -176,15 +201,15 @@ def delete_participant(request,id):
         return redirect('dashboard')
 
 @user_passes_test(is_admin,login_url='no-permission')
-def delete_group(request,id):
+def delete_group(request,group_id):
     if request.method=='POST':
-        group=Group.objects.get(id=id)
+        group=Group.objects.get(id=group_id)
         group.delete()
         messages.success(request,'Group removed!!')
-        return redirect('dashboard')
+        return redirect('group-list')
     else:
         messages.error(request,'Group NOT removed')
-        return redirect('dashboard')
+        return redirect('group-list')
 
 @login_required
 def rsvp_to_events(request,event_id):
@@ -199,7 +224,8 @@ def rsvp_to_events(request,event_id):
             messages.success(request,"Event successfully registered")
             return redirect('user-dashboard')
 
-
+# DASHBOARD MANAGEMENT ------------>
+# dashboard Router
 @login_required
 def dashboard(request):
     if is_organizer(request.user):
@@ -232,8 +258,54 @@ def admin_dashboard(request):
 
 def user_dashboard(request):
     user=request.user
-    context={'user':user}
-    return render(request,'dashboard/user_dashboard.html')
+    context={
+        'user':user
+        }
+    return render(request,'dashboard/user_dashboard.html',context)
+
+class OrganizerDashboard(ListView):
+    model=Event
+    template_name='dashboard.html'
+    context_object_name='events'
+
+
+    def get_context_data(self, **kwargs):
+        context= super().get_context_data(**kwargs)
+        query_type=self.request.GET.get('type')
+
+        event_count=Event.objects.aggregate(total=Count('id',distinct=True),
+                                        upcoming=Count('id',filter=Q(date__gt=date.today()),distinct=True),
+                                        past=Count('id',filter=Q(date__lt=date.today()),distinct=True),
+                                        unique_participants=Count('participants',distinct=True)
+                                        ) 
+        context['event_count']=event_count
+
+        if query_type=='total':
+            context['title']='Total Events'
+        elif query_type=='upcoming':
+            context['title']='Upcoming Events'
+        elif query_type=='upcoming':
+            context['title']='Upcoming Events'
+        elif query_type=='past':
+            context['title']='Past Events'
+        else:
+            context['title']='Todays Events'
+        return context
+    
+    def get_queryset(self):
+        query_type=self.request.GET.get('type')
+        events=Event.objects.select_related('category').prefetch_related('participants')
+        if query_type=='total':
+            events=events.all()
+        
+        elif query_type=='upcoming':
+            events=events.filter(date__gt=date.today())
+        elif query_type=='past':
+            events=events.filter(date__lt=date.today())
+        else:
+            upcomingEvents=Event.objects.filter(date__gt=date.today())
+            events=events.filter(date__exact=date.today())
+        return events
 
 class ProfileView(TemplateView):
     template_name='accounts/profile.html'
@@ -251,6 +323,8 @@ class ProfileView(TemplateView):
         context['id']=user.id
 
         return context
+
+# Password Change and Reset Views ------>
 
 class ChangePassword(PasswordChangeView):
     template_name='accounts/password_change.html'

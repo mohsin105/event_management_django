@@ -4,7 +4,7 @@
 <div class="bg-lime-50 h-screen">
     <div class="w-3/4 mx-auto my-4 border-2 border-black">
 
-        <h1 class="font-bold text-3xl text-center">Create a New Category!!</h1>
+        <h1 class="font-bold text-3xl text-center">{{title}}</h1>
         <div class="w-2/3 mx-auto my-4 border-2 border-black p-4">
             {% if messages %}
                 {% for message in messages %}
@@ -17,7 +17,7 @@
             <div class=" text-center">
                 <form action="" method="POST">
                     {% csrf_token %}
-                    {% for field in category_form %}
+                    {% for field in form %}
                         <div>
                             {% comment %} <label for="{{field.id_for_label}}">{{field.label}}</label> {% endcomment %}
                             <div>

@@ -1,23 +1,53 @@
 {% extends "base.html" %}
 {% block title %}Assign Role{% endblock title %}
 {% block content %}
+    <h1 class="text-3xl text-center font-bold my-4">{{title}}</h1>
+    <div class="w-1/2 mx-auto border-2 border-black p-4 rounded-md shadow-md">
 
-    <div class="w-1/2 mx-auto border border-black p-5">
         {% if messages %}
             {% for message in messages %}
-                <p>{{message}}</p>
+                <p class="p-2 my-2 border-2 rounded-sm bg-rose-400 font-semibold">
+                    {{message}}
+                </p>
             {% endfor %}
         {% endif %}
         <form action="" method="POST">
             {% csrf_token %}
-            {% for field in form %}
-                <div class="border border-black m-2 p-2">
-                    <label for="{{field.id_for_label}}" class="font-bold">{{field.label}}</label> 
-                    <span class="border border-black w-fit">{{field}}</span>
+                <div>
+                    <label 
+                        for="{{form.name.id_for_label}}" 
+                        class="font-bold text-lg">
+                        {{form.name.label}}
+                    </label> 
+                    <div class="">
+                        {{form.name}}
+                    </div>
                 </div>
-            {% endfor %}
+                <div>
+                    <label 
+                        for="{{form.permissions.id_for_label}}" 
+                        class="font-bold text-lg my-4 border-b-4 border-black">
+                        {{form.permissions.label}} : 
+                    </label> 
+                    <div class="">
+                        {% for checkbox in form.permissions %}
+                            <div class="my-2">
+                                <label for="">
+                                    {{checkbox.tag}}
+                                </label>
+                                <span>
+                                    {{checkbox.choice_label}}
+                                </span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
             
-            <button type="submit">Create Group</button>
+            <button 
+                type="submit"
+                class="w-full p-4 my-2 border-2 border-gray-600 rounded-md bg-cyan-500">
+                {{submit_text}}
+            </button>
         </form>
     </div>
 {% endblock content %}

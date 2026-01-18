@@ -1,7 +1,24 @@
 {% extends "base.html" %}
 {% block content %}
       <h2 class="text-3xl font-bold mb-4 text-center">Groups and Permissions</h2>
-      <div class="overflow-x-auto w-1/2 mx-auto border border-black p-5"">
+      <h2 class="text-xl font-bold mb-4 text-center">Total Groups : </h2>
+      <div class="w-1/2 mx-auto flex justify-end my-2">
+        <a 
+          href="{% url 'create-group' %}"
+          class="p-2 bg-cyan-400 border-2 rounded-md border-gray-400 font-bold text-lg shadow-md">
+          Create New Group
+        </a>
+      </div>
+      <div class="w-1/2 mx-auto">
+        {% if messages %}
+          {% for message in messages %}
+            <p class="p-4 border-2 rounded-sm font-semibold bg-red-300">
+              {{message}}
+            </p>
+          {% endfor %}
+        {% endif %}
+      </div>
+      <div class="overflow-x-auto w-1/2 mx-auto border border-black p-5">
         <table class="table-auto w-full border-collapse border border-gray-300">
           <thead>
             <tr class="bg-gray-100">
@@ -13,18 +30,34 @@
             <!-- Example group data -->
             {% for group in groups %}
                 <tr class="odd:bg-white even:bg-gray-50">
-                <td class="border border-gray-300 px-4 py-2 font-medium">
-                    {{group.name}}
-                </td>
-                <td class="border border-gray-300 px-4 py-2">
-                    <ul class="list-disc list-inside">
-                    {% for permission in group.permissions.all %}
-                        <li>{{permission.name}}|{{permission.codename}}</li>
-                    {% empty %}
-                        <span>No Permission assigned</span>
-                    {% endfor %}
-                    </ul>
-                </td>
+                  <td class="border border-gray-300 px-4 py-2 font-medium">
+                      {{group.name}}
+                  </td>
+                  <td class="border border-gray-300 px-4 py-2">
+                      <ul class="list-disc list-inside">
+                      {% for permission in group.permissions.all %}
+                          <li>{{permission.name}}|{{permission.codename}}</li>
+                      {% empty %}
+                          <span>No Permission assigned</span>
+                      {% endfor %}
+                      </ul>
+                      <div class="my-2 flex space-x-4">
+                        <a 
+                          href="{% url 'update-group' group.id %}"
+                          class="px-2 py-1 bg-violet-200 border-1 rounded-md ">
+                          Update Group
+                        </a>
+                        <form action="{% url 'delete-group' group.id %}" method="POST">
+                          {% csrf_token %}
+                          <button
+                            type="submit"
+                            class="px-2 py-1 bg-red-400 border-1 rounded-md">
+                            Delete Group
+                          </button>
+                        </form>
+                        
+                      </div>
+                  </td>
                 </tr>
             {% endfor %}
           </tbody>

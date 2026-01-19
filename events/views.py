@@ -6,7 +6,7 @@ from django.contrib import messages
 from datetime import date
 from django.db.models import Q,Count
 from django.contrib.auth.decorators import login_required,user_passes_test
-from users.views import is_admin,is_organizer,admin_or_organizer
+from users.views import is_admin,is_organizer,admin_or_organizer, admin_or_owner
 from django.views.generic import CreateView,UpdateView,DeleteView,ListView,DetailView
 from django.contrib.auth.mixins import PermissionRequiredMixin,UserPassesTestMixin,LoginRequiredMixin
 from django.urls import reverse_lazy
@@ -25,13 +25,15 @@ def create_event(request):
         event_form=EventModelForm(request.POST,request.FILES)
         if event_form.is_valid():
             event=event_form.save(commit=False)
-            event_form.save()
+            # event_form.save()
+            event.organizer = request.user
+            event.save()
             # context={'event_form':event_form,'message':"Event Created Succesfully!"}
             # return render(request,'create_event.html',context)
 
             participants=request.POST.getlist('participants',[])
-            print(participants)
-            print(request.POST)
+            # print(participants)
+            # print(request.POST)
             if participants:
                 event.participants.set(participants)
                 
@@ -49,22 +51,69 @@ def create_event(request):
     return render(request,'create_event.html',context)
 
 class EventList(ListView):
-    pass
-    # events=Event.objects.select_related('category').prefetch_related('participants').all()
-    # if request.method=="POST":
-    #     search_value = request.POST.get('search')
-    #     search_type = request.POST.get('search_type')
-    #     print(search_value)
-    #     print('Search Type: ', search_type)
-    #     if search_type=="category":
-    #         print('inside category search')
-    #         events=events.filter(category__name__icontains=search_value)
-    #     else:
-    #         events=events.filter(name__icontains=search_value)
-            
-    # context={
-    #     'events':events
-    # }
+    model = Event
+    template_name='event_list.html'
+    context_object_name='events'
+
+    def get_queryset(self):
+        qs = Event.objects.select_related('category').prefetch_related('participants').all()
+        search_value = self.request.GET.get('search')
+        search_type = self.request.GET.get('search_type')
+        query_type = self.request.GET.get('type')
+        
+        if query_type == 'upcoming':
+            qs = qs.filter(date__gt=date.today())
+        elif query_type == 'past':
+            qs = qs.filter(date__lt = date.today())
+        elif query_type == 'today':
+            qs = qs.filter(date__exact = date.today())
+        
+        if search_value:
+            if search_type == 'category':
+                qs = qs.filter(category__name__icontains=search_value)
+            else:
+                qs = qs.filter(name__icontains = search_value)
+        return qs
+    
+    def get_context_data(self, **kwargs):
+        context= super().get_context_data(**kwargs)
+        query_type = self.request.GET.get('type')
+        if query_type:
+            context['title'] = f'{query_type.capitalize()} Events'
+        else:
+            context['title']='All Events'
+        
+        event_count = Event.objects.aggregate(
+            total=Count('id',distinct=True),
+            upcoming=Count('id',filter=Q(date__gt=date.today()),distinct=True),
+            past=Count('id',filter=Q(date__lt=date.today()),distinct=True),
+        )
+        event_count['unique_participants'] = 7
+        context['url_name']='events'
+        stats_cards=[
+            {
+                'title':'Total Participants',
+                'count':event_count['unique_participants'],
+                'type':'today'
+            },
+            {
+                'title':'Total Events',
+                'count':event_count['total'],
+                'type':'total'
+            },
+            {
+                'title':'Upcoming Events',
+                'count':event_count['upcoming'],
+                'type':'upcoming'
+            },
+            {
+                'title':'Past Events',
+                'count':event_count['past'],
+                'type':'past'
+            },
+        ]
+        context['stats_cards'] = stats_cards
+        return context
 
 @user_passes_test(admin_or_organizer,login_url='no-permission')
 def create_category(request):
@@ -90,7 +139,7 @@ def create_category(request):
         }
     return render(request,'create_category.html',context)
 
-class UpdateCategory(UpdateView):
+class UpdateCategory(UserPassesTestMixin,UpdateView):
     model = Category
     form_class=CategoryModelForm
     pk_url_kwarg='category_id'
@@ -98,6 +147,9 @@ class UpdateCategory(UpdateView):
     template_name='create_category.html'
     success_url=reverse_lazy('create-category')
 
+    def test_func(self):
+        return admin_or_organizer(self.request.user)
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Update Category'
@@ -128,7 +180,7 @@ class CategoryList(UserPassesTestMixin,ListView):
     def get_queryset(self):
         return Category.objects.prefetch_related('event_list').all()
 
-@user_passes_test(admin_or_organizer,login_url='no-permission')
+@user_passes_test(admin_or_owner,login_url='no-permission')
 def update_event(request,id):
     event=Event.objects.get(id=id)
     event_form=EventModelForm(instance=event)
@@ -157,6 +209,18 @@ def update_event(request,id):
     return render(request,'create_event.html',context)
 
 
+class UpdateEvent(UserPassesTestMixin,UpdateView):
+    model=Event
+    template_name='create_event.html'
+    form_class=EventModelForm
+    pk_url_kwarg='id'
+    success_url=reverse_lazy('create-event')
+
+    def form_valid(self, form):
+        # form
+        return super().form_valid(form)
+    
+
 
 
 
@@ -164,8 +228,12 @@ def update_event(request,id):
 
 def show_details(request,id): #prefetch_related name replaced from 'participant_list'
     event=Event.objects.prefetch_related('participants').get(id=id)
+    is_registered = event.participants.filter(id=request.user.id).exists()
 
-    context={'event':event}
+    context={
+        'event':event,
+        'is_registered':is_registered
+    }
 
     return render(request,'event_details.html',context)
 """Event Details CBV hoy nai
@@ -194,7 +262,7 @@ class DeleteEvent(UserPassesTestMixin,LoginRequiredMixin,DeleteView):
     success_url=reverse_lazy('dashboard')
 
     def test_func(self):
-        return admin_or_organizer(self.request.user)
+        return admin_or_owner(self.request.user,self.get_object())
     
     def delete(self, request, *args, **kwargs):
         messages.success(request,'Event deleted!!')

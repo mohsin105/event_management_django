@@ -19,17 +19,32 @@
         <div class="flex justify-evenly m-4">
 
             <h3 class="bg-violet-600 p-2 text-white rounded-md">{{event.date}}</h3>
-            <div class="bg-violet-600 p-2 text-white rounded-md">{{event.time}}</div>
+            <div class="bg-violet-600 p-2 text-white rounded-md">{{event.start_time}}</div>
             <div class="bg-violet-600 p-2 text-white rounded-md">{{event.location}}</div>
         </div>
         <div>
             <p>{{event.description}}</p>
         </div>
+        <div class="w-fit my-4">
+            <p class="font-semibold text-lg border-2 border-gray-500 rounded-xl p-4">
+                Organizer: {{event.organizer.first_name}} {{event.organizer.last_name}} 
+            </p>
+        </div>
+        {% comment %} Participant List:  {% endcomment %}
         <div class="text-left w-4/5 mx-auto">
-            <h4 class="text-xl">Participants: </h4>
+            <h4 class="text-xl font-bold">Participants: </h4>
             {% for member in event.participants.all %}
                 <p>{{member.first_name}} {{member.last_name}}</p>
             {% endfor %}
+        </div>
+        <div class="home_btn w-1/6">
+            <form action="{% url 'rsvp-event' event.id %}" method="POST">
+            {% csrf_token %}
+                <button type="submit"
+                    class="p-4 border-2 rounded-md my-2  bg-sky-500 font-bold">
+                    {% if is_registered %}UnRegister {% else %}Register Now{% endif %}
+                </button>
+            </form>
         </div>
     </section>
 {% endblock content %}

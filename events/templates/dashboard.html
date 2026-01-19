@@ -1,92 +1,15 @@
 {% extends "base.html" %}
-{% block title %}Dashboard{% endblock title %}
+{% block title %}Organizer Dashboard{% endblock title %}
 {% block content %}
-    {% comment %} Stats grid section {% endcomment %}
-    <section class="progress grid grid-cols-2 sm:grid-cols-4 gap-4 p-8">
-        <a href="{% url 'organizer-dashboard' %}?type=participants">
-            <div class="progress_card bg-white p-4 rounded-lg border-2 border-black shadow-xl">
-                <h3 class="card_heading text-sm mb-2 font-bold">Total Participants</h3>
-                <div class="card_body flex justify-between">
-                    <div class="text_side">
-                        <div class="text-xl font-semibold border rounded-full size-8 text-center">
-                            {{event_count.unique_participants}}
-                        </div>
-                        
-                    </div>
-                    <div class="icon_side w-7  flex justify-center ">
-                        
-                    <!-- icon ke padding diye backgournd color apply korsi
-                    and border rounded korsi -->
-                    <!-- parent div ke flex kore justify content k center e anchi, ete icon center e asche -->
-                    </div>
-                </div>
-            </div>
-        </a>
-        <a href="{% url 'organizer-dashboard' %}?type=total">
-            <div class="progress_card bg-white p-4 rounded-lg border-2 border-black shadow-xl">
-                <h3 class="card_heading text-sm mb-2 font-bold">Total Events</h3>
-                <div class="card_body flex justify-between">
-                    <div class="text_side">
-                        <p class="text-xl font-semibold border rounded-full size-8 text-center">
-                            {{event_count.total}}
-                        </p>
-                        
-                    </div>
-                    <div class="icon_side w-7  flex justify-center ">
-                        
-                        
-                    <!-- icon ke padding diye backgournd color apply korsi
-                    and border rounded korsi -->
-                    <!-- parent div ke flex kore justify content k center e anchi, ete icon center e asche -->
-                    </div>
-                </div>
-            </div>
-        </a>
-        <a href="{% url 'organizer-dashboard' %}?type=upcoming">
-            <div class="progress_card bg-white p-4 rounded-lg border-2 border-black shadow-xl ">
-                <h3 class="card_heading text-sm mb-2 font-bold">Upcoming Events</h3>
-                <div class="card_body flex justify-between">
-                    <div class="text_side">
-                        <p class="text-xl font-semibold size-8 border rounded-full text-center">
-                            {{event_count.upcoming}}
-                        </p>
-                        
-                    </div>
-                    <div class="icon_side w-7  flex justify-center ">
-                        
-                        
-                    <!-- icon ke padding diye backgournd color apply korsi
-                    and border rounded korsi -->
-                    <!-- parent div ke flex kore justify content k center e anchi, ete icon center e asche -->
-                    </div>
-                </div>
-            </div>
-        </a>
-        <a href="{% url 'organizer-dashboard' %}?type=past">
-            <div class="progress_card bg-white p-4 rounded-lg border-2 border-black shadow-xl ">
-                <h3 class="card_heading text-sm mb-2 font-bold">Past Events</h3>
-                <div class="card_body flex justify-between">
-                    <div class="text_side">
-                        <p class="text-xl font-semibold size-8 rounded-full border text-center">
-                            {{event_count.past}}
-                        </p>
-                        
-                    </div>
-                    <div class="icon_side w-7  flex justify-center ">
-                        
-                    <!-- icon ke padding diye backgournd color apply korsi
-                    and border rounded korsi -->
-                    <!-- parent div ke flex kore justify content k center e anchi, ete icon center e asche -->
-                    </div>
-                </div>
-            </div>
-        </a>
-    </section>
-    {% if messages %}
-        {% for message in messages %}
-        <p>{{message}}</p>
-        {% endfor %}
-    {% endif %}
+    
+    {% include "stats_grid.html" %}
+    <div>
+        {% if messages %}
+            {% for message in messages %}
+            <p>{{message}}</p>
+            {% endfor %}
+        {% endif %}
+    </div>
     {% comment %} Event display section {% endcomment %}
     <div class="all_task bg-white  rounded-lg p-3 mt-3">
         <h3 class="font-bold text-2xl text-center my-3">{{title}}</h3>   
@@ -138,4 +61,5 @@
             </div>
         </div>
         {% endfor %}
+    </div>
 {% endblock content %}

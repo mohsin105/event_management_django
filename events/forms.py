@@ -13,7 +13,7 @@ class EventModelForm(forms.ModelForm): #queryset e participant k user diye repla
         )
     class Meta:
         model=Event
-        fields=['name','description','date','time','location','category','participants','asset'] #,'participant_list' does not work
+        fields=['name','description','date','start_time','end_time','location','category','capacity','status','participants','asset'] #,'participant_list' does not work
 
         widgets={
             'name':forms.TextInput(
@@ -32,21 +32,38 @@ class EventModelForm(forms.ModelForm): #queryset e participant k user diye repla
                     'class':'w-1/2 p-4 my-2 border-2 border-gray-500 rounded-md shadow-md',
                     'type':'date'
                     }),
-            'time':forms.TimeInput(
+            'start_time':forms.TimeInput(
                 attrs={
                     'placeholder':'HH:MM:SS',
-                    'class':'w-1/2 p-4 my-2 border-2 border-gray-500 rounded-md shadow-md',
+                    'class':'w-1/3 p-4 my-2 border-2 border-gray-500 rounded-md shadow-md',
                     'type':'time'
                     }),
+            'end_time':forms.TimeInput(
+                attrs={
+                    'class':'w-1/3 p-4 my-2 border-2 border-gray-500 rounded-md shadow-md',
+                    'type':'time'
+                }
+            ),
             'location':forms.Textarea(
                 attrs={
-                    'class':'w-full p-4 my-2 borde-2 border-gray-400 rounded-md shadow-md',
+                    'class':'w-full p-4 my-2 border-2 border-gray-400 rounded-md shadow-md',
                     'rows':3
                     }),
             'category':forms.Select(
                 attrs={
                     'class':'w-1/2 p-4 my-2 display-block bg-black border-2 border-gray-400  rounded-md ',
                     }),
+            'capacity':forms.NumberInput(
+                attrs={
+                    'class':'w-1/6 p-4 my-2 border-2 border-gray-400 rounded-md shadow-md',
+                    
+                }
+            ),
+            'status':forms.Select(
+                attrs={
+                    'class':'w-1/3 p-4 my-2 border-2 border-gray-400 rounded-md shadow-md'
+                }
+            ),
             'participants': forms.CheckboxSelectMultiple(
                 attrs={
                     'class':' p-4 my-2 flex border-2 border-gray-400 rounded-md',

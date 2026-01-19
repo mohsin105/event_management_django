@@ -15,7 +15,7 @@
         <div >
             <ul class="flex space-x-4 font-semibold relative ">
                 <li><a href="{% url 'home' %}">Home</a></li>
-                <li><a href="{% url 'organizer-dashboard' %}">Events</a></li>
+                <li><a href="{% url 'events' %}">Events</a></li>
                 <li><a href="">Gallery</a></li>
                 <li><a href="">Pages</a></li>
                 <li><a href="">About Us</a></li>
@@ -25,7 +25,6 @@
                     
                     <ul class="absolute left-0 mt-2  group-hover:block w-40 bg-white border border-gray-200 rounded-md shadow-lg z-50 ">
                         
-                        <li><a href="{% url 'create-event' %}" class="block px-4 py-2 hover:bg-gray-100">Event</a></li>
                         <li><a href="{% url 'create-participant' %}">Participant</a></li>
                     </ul> 
                     

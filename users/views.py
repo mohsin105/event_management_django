@@ -31,6 +31,9 @@ def is_participant(user):
 def admin_or_organizer(user):
     return is_admin(user) or is_organizer(user)
 
+def admin_or_owner(user, event):
+    return is_admin(user) or user == event.organizer
+
 # USER Model CRUD and Auth ---------> 
 
 #sign-up user
@@ -217,11 +220,12 @@ def rsvp_to_events(request,event_id):
         user=request.user
         event=Event.objects.get(id=event_id)
         if user.rsvp_events.filter(id=event_id).exists():
-            messages.error(request,"You have already registered this event")
+            user.rsvp_events.remove(event)
+            messages.success(request,"You have un-registered from this event!!!")
             return redirect('user-dashboard')
         else:
             user.rsvp_events.add(event)
-            messages.success(request,"Event successfully registered")
+            messages.success(request,"Event successfully registered!!!")
             return redirect('user-dashboard')
 
 # DASHBOARD MANAGEMENT ------------>
@@ -265,39 +269,75 @@ def user_dashboard(request):
 
 class OrganizerDashboard(ListView):
     model=Event
-    template_name='dashboard.html'
+    template_name='dashboard/organizer_dashboard.html'
     context_object_name='events'
-
+    
 
     def get_context_data(self, **kwargs):
         context= super().get_context_data(**kwargs)
         query_type=self.request.GET.get('type')
 
-        event_count=Event.objects.aggregate(total=Count('id',distinct=True),
-                                        upcoming=Count('id',filter=Q(date__gt=date.today()),distinct=True),
-                                        past=Count('id',filter=Q(date__lt=date.today()),distinct=True),
-                                        unique_participants=Count('participants',distinct=True)
-                                        ) 
+        event_count=Event.objects.aggregate(
+            total=Count(
+                'id',
+                filter=Q(organizer=self.request.user),
+                distinct=True),
+            upcoming=Count(
+                'id',
+                filter=Q(organizer=self.request.user,date__gt=date.today()),
+                distinct=True),
+            past=Count(
+                'id',
+                filter=Q(organizer=self.request.user,date__lt=date.today()),
+                distinct=True),
+            # unique_participants=Count('participants',distinct=True)
+        ) 
+        event_count['unique_participants'] = 7
         context['event_count']=event_count
+        context['url_name']='organizer-dashboard'
 
         if query_type=='total':
-            context['title']='Total Events'
+            context['title']='Your Total Events'
         elif query_type=='upcoming':
-            context['title']='Upcoming Events'
+            context['title']='Your Upcoming Events'
         elif query_type=='upcoming':
-            context['title']='Upcoming Events'
+            context['title']='Your Upcoming Events'
         elif query_type=='past':
-            context['title']='Past Events'
+            context['title']='Your Past Events'
         else:
-            context['title']='Todays Events'
+            context['title']='Your Todays Events'
+        
+        stats_cards = [
+            {
+                'title':'Total Participants',
+                'count':event_count['unique_participants'],
+                'type':'participants'
+            },
+            {
+                'title':'Your Total Events',
+                'count':event_count['total'],
+                'type':'total'
+            },
+            {
+                'title':'Your Upcoming Events',
+                'count':event_count['upcoming'],
+                'type':'upcoming'
+            },
+            {
+                'title':'Your Past Events',
+                'count':event_count['past'],
+                'type':'past'
+            }
+        ]
+        context['stats_cards'] = stats_cards
         return context
     
     def get_queryset(self):
         query_type=self.request.GET.get('type')
-        events=Event.objects.select_related('category').prefetch_related('participants')
+        events=Event.objects.select_related('category').prefetch_related('participants').filter(organizer=self.request.user)
+        
         if query_type=='total':
             events=events.all()
-        
         elif query_type=='upcoming':
             events=events.filter(date__gt=date.today())
         elif query_type=='past':

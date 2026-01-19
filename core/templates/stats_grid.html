@@ -1,0 +1,27 @@
+<section class="progress grid grid-cols-2 sm:grid-cols-4 gap-4 p-8">
+    {% comment %} 
+    Depending on the stats_card context variable which is an array of dictionary within View 
+    {% endcomment %}
+    {% for stat_card in stats_cards %}
+    <a href="{% url url_name %}?type={{stat_card.type}}">
+        <div class="progress_card bg-white p-4 rounded-lg border-2 border-black shadow-xl">
+            <h3 class="card_heading text-sm mb-2 font-bold">{{stat_card.title}}</h3>
+            <div class="card_body flex justify-between">
+                <div class="text_side">
+                    <div class="text-xl font-semibold border rounded-full size-8 text-center">
+                        {{stat_card.count}}
+                    </div>
+                    
+                </div>
+                <div class="icon_side w-7  flex justify-center ">
+                    
+                <!-- icon ke padding diye backgournd color apply korsi
+                and border rounded korsi -->
+                <!-- parent div ke flex kore justify content k center e anchi, ete icon center e asche -->
+                </div>
+            </div>
+        </div>
+    </a>
+    {% endfor %}
+    
+</section>

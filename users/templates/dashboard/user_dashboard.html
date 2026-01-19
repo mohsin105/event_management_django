@@ -4,6 +4,15 @@
 
 <div class="min-w-1/2 w-fit  mx-auto border-2 border-black p-5 rounded-sm">
     <h2 class="font-bold">Hello {{user.first_name}} {{user.last_name}}</h2>
+    <div>
+        {% if messages %}
+            {% for message in messages %}
+                <p class="w-full p-2 border-2 rounded-sm bg-rose-300 my-2">
+                    {{message}}
+                </p>
+            {% endfor %}
+        {% endif %}
+    </div>
     <p class="text-2xl font-semibold">Events you have registered to </p>
     <div class="grid grid-cols-4 gap-1 text-sm mt-2 border-2 my-6 p-2 rounded-lg shadow-xl  bg-green-200">
         <div>Event Name</div>
@@ -39,14 +48,7 @@
                 <button class="border-2 px-4 py-2 bg-slate-500 rounded-md">
                     <a href="{% url 'details' event.id %}">Details</a>
                 </button>
-                <button class="border-2 px-4 py-2 bg-cyan-400 rounded-md">
-                    <a href="{% url 'update-event' event.id %}">Update</a>
-                </button>
-
-                <form action="{% url 'delete-event' event.id %}" method="POST">
-                    {% csrf_token %}
-                    <button type="submit" class="border-2 px-4 py-2 bg-red-400 rounded-md">Delete</button>
-                </form>
+                
             </div>
         </div>
     

@@ -1,27 +1,32 @@
 {% extends "base.html" %}
 {% block title %}All Events{% endblock title %}
-{% block title %}
+{% block content %}
+<h1 class="text-3xl text-center font-bold my-4">All Events: </h1>
+<div>
+    {% include "stats_grid.html" %}
+</div>
 {% comment %} Search Bar {% endcomment %}
 <div class="bg-gray-50 w-3/4 mx-auto rounded-sm shadow-xl p-2 ">
-        <form action="" class="m-4 text-center" method="POST">
-            {% csrf_token %}
-            <input 
-                type="text" 
-                name="search" 
-                class="border-4 p-2 rounded-md" 
-                placeholder="Search Value">
-            <select name="search_type" id="">
-                <option value="">Search By</option>
-                <option value="event">Event</option>
-                <option value="category">Category</option>
-            </select>
-            <button type="submit" 
-                class="bg-violet-600 text-white p-2 rounded-md">Search</button>
-        </form>
-    </div>
+    <form action="" class="m-4 text-center" method="GET">
+        
+        <input 
+            type="text" 
+            name="search" 
+            value="{{request.GET.search}}"
+            class="border-4 p-2 rounded-md" 
+            placeholder="Search Value">
+        <select name="search_type" id="">
+            <option value="">Search By</option>
+            <option value="event">Event</option>
+            <option value="category">Category</option>
+        </select>
+        <button type="submit" 
+            class="bg-violet-600 text-white p-2 rounded-md">Search</button>
+    </form>
+</div>
     {% comment %} <p class="text-lg italic text-green-500 text-center">Search button here. </p> {% endcomment %}
     <div class="all_task bg-gray-50 border-black border-2 w-5/6 mx-auto rounded-lg p-3 mt-3 ">
-           
+        <h2 class="text-xl text-center font-bold my-2">{{title}}</h2>  
         <div class="all_task_body grid grid-cols-4 gap-1 text-lg font-bold bg-cyan-200 shadow-xl py-4">
             <!-- <div class="task_body_heading"></div> -->
              <p>Event Name</p>
@@ -60,4 +65,4 @@
         {% endfor %}
         
     </div>
-{% endblock title %}
+{% endblock content %}

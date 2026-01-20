@@ -246,20 +246,98 @@ def admin_dashboard(request):
     query_type=request.GET.get('type')
     group_count = Group.objects.all().count()
     category_count = Category.objects.all().count()
+    event_count = Event.objects.aggregate(
+        all=Count(
+            'id',
+            distinct=True),
+        managed=Count(
+            'id',
+            filter=Q(organizer=request.user),
+            distinct=True
+        )
+    )
     
     if query_type=='participants':
         contents=User.objects.all()
+    elif query_type == "all":
+        events = Event.objects.select_related('category').all()
     else:
         contents=Event.objects.prefetch_related('participants').all()
+        events=False
     
     context={
-        'contents':contents,
+        # 'contents':contents,
+        'event_count':event_count['all'],
         'group_count':group_count,
-        'category_count':category_count
+        'category_count':category_count,
+        'managed_event_count':event_count['managed'],
+        'events':events,
+        'title':'All Events',
+
         }
-    print('Admin Dashboard context: ',contents)
+    # print('Admin Dashboard context: ',contents)
     return render(request,'admin/admin_dashboard.html',context)
 
+class AdminEventList(UserPassesTestMixin,ListView):
+    model = Event
+    template_name='admin/event_list.html'
+    context_object_name='events'
+
+    def test_func(self):
+        return is_admin(self.request.user)
+    
+    def get_queryset(self):
+        return Event.objects.select_related('category').all()
+    
+    def get_context_data(self, **kwargs):
+        
+        context = super().get_context_data(**kwargs)
+        query_type = self.request.GET.get('type')
+
+        context['url_name']='admin-event-list'
+        event_count = Event.objects.aggregate(
+            total=Count('id', distinct=True),
+            upcoming=Count(
+                'id',
+                filter=Q(date__gt=date.today()),
+                distinct=True),
+            past=Count(
+                'id',
+                filter=Q(date__lt=date.today()),
+                distinct=True
+            )
+        )
+        event_count['unique_participants'] = 7
+        if query_type:
+            context['title']=f'{query_type.capitalize()} Events:'
+        else:
+            context['title']="All Events"
+        
+        stats_cards = [
+            {
+                'title':'Total Participants',
+                'count':event_count['unique_participants'],
+                'type':'participants'
+            },
+            {
+                'title':'Total Events',
+                'count':event_count['total'],
+                'type':'total'
+            },
+            {
+                'title':'Upcoming Events',
+                'count':event_count['upcoming'],
+                'type':'upcoming'
+            },
+            {
+                'title':'Past Events',
+                'count':event_count['past'],
+                'type':'past'
+            }
+        ]
+        context['stats_cards']=stats_cards
+        return context
+    
 def user_dashboard(request):
     user=request.user
     context={
@@ -296,17 +374,11 @@ class OrganizerDashboard(ListView):
         context['event_count']=event_count
         context['url_name']='organizer-dashboard'
 
-        if query_type=='total':
-            context['title']='Your Total Events'
-        elif query_type=='upcoming':
-            context['title']='Your Upcoming Events'
-        elif query_type=='upcoming':
-            context['title']='Your Upcoming Events'
-        elif query_type=='past':
-            context['title']='Your Past Events'
+        if query_type:
+            context['title'] = f'Your {query_type.capitalize()} Events'
         else:
             context['title']='Your Todays Events'
-        
+
         stats_cards = [
             {
                 'title':'Total Participants',

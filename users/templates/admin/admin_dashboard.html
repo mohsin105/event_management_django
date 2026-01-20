@@ -6,6 +6,16 @@
     <h1 class="text-xl font-bold">Hello Admin</h1>
     <h2 class="text-lg font-bold">Manage your platform</h2>
 </div>
+<div>
+    {% if messages %}
+        {% for message in messages %}
+            <p class="p-4 border-2 rounded-md bg-rose-300 my-2 font-semibold">
+                {{message}}
+            </p>
+        {% endfor %}
+    {% endif %}
+</div>
+{% comment %} Options Grid {% endcomment %}
 <div class="w-3/4 mx-auto border-2 border-black p-4 bg-gray-50">
     <section class="progress grid grid-cols-2 sm:grid-cols-4 gap-6 justify-between">
         <a href="{% url 'user-list' %}">
@@ -15,7 +25,7 @@
                 <div class="card_body flex justify-between">
                     <div class="text_side">
                         {% comment %} <p class="text-xl font-semibold">{{event_count.unique_participants}}</p> {% endcomment %}
-                        <p class="text-xl font-semibold">{{contents.participants.count}}</p>
+                        <p class="text-xl font-semibold">5</p>
                         
                     </div>
                     <div class="icon_side w-7  flex justify-center ">
@@ -27,12 +37,12 @@
                 </div>
             </div>
         </a>
-        <a href="{% url 'organizer-dashboard' %}">
+        <a href="{% url 'admin-event-list' %}">
             <div class="progress_card  bg-gray-200 p-2 rounded-md border-2 border-black shadow-xl">
-                <h3 class="card_heading text-md mb-2 font-bold">Events</h3>
+                <h3 class="card_heading text-md mb-2 font-bold">Total Events</h3>
                 <div class="card_body flex justify-between">
                     <div class="text_side">
-                        <p class="text-xl font-semibold">{{contents|length}}</p>
+                        <p class="text-xl font-semibold">{{event_count}}</p>
                         
                     </div>
                     <div class="icon_side w-7  flex justify-center ">
@@ -81,7 +91,30 @@
                 </div>
             </div>
         </a>
+        <a href="{% url 'organizer-dashboard' %}">
+            <div class="progress_card  bg-gray-200 p-2 rounded-md border-2 border-black shadow-xl">
+                <h3 class="card_heading text-md mb-2 font-bold">Events You Manage</h3>
+                <div class="card_body flex justify-between">
+                    <div class="text_side">
+                        <p class="text-xl font-semibold">{{managed_event_count}}</p>
+                        
+                    </div>
+                    <div class="icon_side w-7  flex justify-center ">
+                        
+                        
+                    <!-- icon ke padding diye backgournd color apply korsi
+                    and border rounded korsi -->
+                    <!-- parent div ke flex kore justify content k center e anchi, ete icon center e asche -->
+                    </div>
+                </div>
+            </div>
+        </a>
         
     </section>
 </div>
+{% comment %} {% if events %}
+<div class="">
+        {% include "event_list_control.html" %}
+    </div>
+{% endif %} {% endcomment %}
 {% endblock content %}

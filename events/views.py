@@ -39,7 +39,10 @@ def create_event(request):
                 
 
             messages.success(request,'Event created successfully!')
-            context={'event_form':event_form}
+            context={
+                'event_form':event_form,
+                'title':'Create a New Event'
+            }
             return redirect('create-event')
         else:
             # context={'event_form':event_form,'message':'Properly fill up the form!'}
@@ -47,7 +50,10 @@ def create_event(request):
             messages.error(request,'Properly fill up the form!')
             return redirect('create-event')
         
-    context={ 'event_form':event_form}
+    context={
+        'event_form':event_form,
+        'title':'Create a New Event'
+        }
     return render(request,'create_event.html',context)
 
 class EventList(ListView):
@@ -180,33 +186,7 @@ class CategoryList(UserPassesTestMixin,ListView):
     def get_queryset(self):
         return Category.objects.prefetch_related('event_list').all()
 
-@user_passes_test(admin_or_owner,login_url='no-permission')
-def update_event(request,id):
-    event=Event.objects.get(id=id)
-    event_form=EventModelForm(instance=event)
 
-    if request.method=='POST':
-        event_form=EventModelForm(request.POST,instance=event)
-        if event_form.is_valid():
-            event=event_form.save(commit=False)
-            event_form.save()
-
-            participants=request.POST.getlist('participants')
-            # event.participant_list.set(participants)
-            print('participant  list: ')
-            print(participants)
-
-            for member in participants:
-                event.participants.add(member)  #prefetch_related name replaced from 'participant_list'
-
-            messages.success(request,'Event Updated Succesfully!')
-            return redirect('update-event',id)
-        else:
-            messages.error(request,'Something went wrong')
-            return redirect('update-event',id)
-            
-    context={'event_form':event_form}
-    return render(request,'create_event.html',context)
 
 
 class UpdateEvent(UserPassesTestMixin,UpdateView):
@@ -215,9 +195,26 @@ class UpdateEvent(UserPassesTestMixin,UpdateView):
     form_class=EventModelForm
     pk_url_kwarg='id'
     success_url=reverse_lazy('create-event')
+    context_object_name='event_form'
+    login_url=reverse_lazy('no-permission')
 
+    def test_func(self):
+        print('Event Object: ',self.get_object())
+        return admin_or_owner(self.request.user, self.get_object())
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['event_form'] = self.get_form()
+        context['title'] = 'Update Event Form'
+        return context
+    
     def form_valid(self, form):
-        # form
+        event = form.save(commit=False)
+        form.save()
+        participants = self.request.POST.getlist('participants')
+        for member in participants:
+            event.participants.add(member)
+        messages.success(self.request, "Event Updated Successfully!!!")
         return super().form_valid(form)
     
 

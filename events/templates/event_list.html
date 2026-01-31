@@ -25,9 +25,9 @@
     </form>
 </div>
     {% comment %} <p class="text-lg italic text-green-500 text-center">Search button here. </p> {% endcomment %}
-    <div class="all_task bg-gray-50 border-black border-2 w-5/6 mx-auto rounded-lg p-3 mt-3 ">
-        <h2 class="text-xl text-center font-bold my-2">{{title}}</h2>  
-        <div class="all_task_body grid grid-cols-4 gap-1 text-lg font-bold bg-cyan-200 shadow-xl py-4">
+    <div class="all_task bg-gray-50  w-11/12 mx-auto rounded-lg p-4 my-4 ">
+        <h2 class="text-2xl text-center font-bold my-4">{{title}}</h2>  
+        <div class="all_task_body grid grid-cols-4 gap-1 place-items-center text-lg font-bold bg-cyan-200 shadow-xl p-4 ">
             <!-- <div class="task_body_heading"></div> -->
              <p>Event Name</p>
              <p>Category</p>
@@ -35,31 +35,36 @@
              <p>Do More</p>
         </div>
         {% comment %} Event List {% endcomment %}
-        {% for event in events %}
-        <div class="grid grid-cols-4 gap-2 text-sm mt-6 border border-gray-300 shadow-lg py-2 rounded-md">
-
-            <div class="flex items-center gap-1">
-               <div class="list_style flex justify-center items-center w-2 h-2 bg-green-600 rounded-full "></div>
-               <p>{{event.name}}</p>
+        {% if events|length == 0 %}
+            <div class="text-2xl text-center font-semibold p-8 ">
+                No events yet
             </div>
-            <div class="flex items-center">
-               <div class=" bg-blue-200 w-fit py-1 px-2 rounded-md ">
+        {% endif %}
+        {% for event in events %}
+        <div class="grid grid-cols-4 gap-2 text-sm mt-6 border border-gray-300 shadow-lg py-4 rounded-md">
+
+            <div class="flex items-center gap-1 pl-4">
+               <div class="list_style flex justify-center items-center w-2 h-2 bg-green-600 rounded-full "></div>
+               <p class="text-base">{{event.name}}</p>
+            </div>
+            <div class="place-self-center text-start">
+               <div class=" bg-blue-200 w-fit py-2 px-2 rounded-md font-semibold">
                    <p>{{event.category}}</p>
 
                </div>
             </div>
-            <div class="flex gap-1 text-center -space-x-3 text-white">
+            <div class="place-self-center text-white">
                
                 <div class="list_style w-8 h-8 bg-green-600 rounded-full border border-white self-center flex items-center justify-center ">
-                     <p >{{event.participants.all.count}}</p>
+                     <p class="font-bold">{{event.participants.all.count}}</p>
                  </div>
                 
                 
              </div>
-            <div class="flex items-center gap-5">
+            <div class="place-self-center flex flex-col md:flex-row items-center justify-between  w-1/2 gap-5">
 
-                <p>{{event.date}}</p>
-                <a href="{% url 'details' event.id %}">Details</a>
+                <p class="font-semibold basis-2/3">{{event.date}}</p>
+                <a href="{% url 'details' event.id %}" class="p-2 rounded-md bg-violet-400">Details</a>
             </div>
         </div>
         {% endfor %}

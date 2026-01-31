@@ -1,11 +1,80 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
+<div class="w-full">
     {% comment %} Heading and Hero Section {% endcomment %}
-    <div class="test_design w-full text-center p-5 bg-cyan-200">
-
-        <h2 class="text-8xl">THE EVENT </h2>
-        <p class="text-3xl">Seamless Events, Unforgettable Moments</p>
+    <div 
+        class="relative test_design w-full text-center p-5 bg-cyan-200 h-[70vh] bg-cover  "
+        style="background-image: url('{% static 'images/seminar3.avif' %}')">
+        <div class="absolute inset-0 bg-gradient-to-b from-neutral-50/20 via-black/70 to-slate-200/20" ></div>
+        <div class="relative font-bold flex flex-col h-full justify-center text-white drop-shadow-xl  ">
+            <h2 class="text-8xl font-semibold">Eventum</h2>
+            <p class="text-3xl">Seamless Events, Unforgettable Moments</p>
+        </div>
     </div>
+    <section class="relative bg-violet-100/30 bg-cover bg-center"
+        style="background-image: url('{% static 'images/feature_bg.jpg' %}')">
+        <div class="absolute inset-0 bg-black/10"></div>
+        <div class="relative">
+            <h2 class="font-bold text-4xl text-center mt-4">Features</h2>
+            <section class="w-11/12 mx-auto p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-col-3 place-items-center gap-8 ">
+                <div class="p-4 w-2/3 border-2 rounded-md hover:scale-105 shadow-lg bg-gradient-to-r from-[#6c94d5] to-[#0588C0]">
+                    <h3 class="text-lg font-semibold mb-4">Discover Events</h3>
+                    <ul class="list-inside list-disc space-y-2">
+                        <li>Browse events by category and date</li>
+                        <li>Search and filter events easily</li>
+                        <li>Search and filter events easily</li>
+                        <li>Access detailed event information</li>
+                    </ul>
+                </div>
+                <div class="p-4 w-2/3 border-2 rounded-md hover:scale-105 shadow-lg bg-gradient-to-r from-[#98b7ea] to-[#6dc8ef]">
+                    <h3 class="text-lg font-semibold mb-4">Simple Event Registration</h3>
+                    <ul class="list-inside list-disc space-y-2">
+                        <li>Register for events in one click</li>
+                        <li>Cancel registration anytime</li>
+                        <li>Track your registered events</li>
+                        <li>Get clear event status updates</li>
+                    </ul>
+                </div>
+                <div class="p-4 w-2/3 border-2 rounded-md hover:scale-105 shadow-lg bg-gradient-to-r from-[#98b7ea] to-[#6dc8ef]">
+                    <h3 class="text-lg font-semibold mb-4">Role-Based Access Control</h3>
+                    <ul class="list-inside list-disc space-y-2">
+                        <li>Separate roles for users and organizers</li>
+                        <li>Admin-controlled permissions</li>
+                        <li>Secure access to dashboards</li>
+                        <li>Clear responsibility boundaries</li>
+                    </ul>
+                </div>
+                <div class="p-4 w-2/3 border-2 rounded-md hover:scale-105 shadow-lg bg-gradient-to-r from-[#98b7ea] to-[#6dc8ef]">
+                    <h3 class="text-lg font-semibold mb-4">Organizer Event Management</h3>
+                    <ul class="list-inside list-disc space-y-2">
+                        <li>Create and publish new events</li>
+                        <li>Edit or cancel your own events</li>
+                        <li>Manage event schedules and details</li>
+                        <li>View participants for each event</li>
+                    </ul>
+                </div>
+                <div class="p-4 w-2/3 border-2 rounded-md hover:scale-105 shadow-lg bg-gradient-to-r from-[#98b7ea] to-[#6dc8ef]">
+                    <h3 class="text-lg font-semibold mb-4 ">Category & Event Organization</h3>
+                    <ul class="list-inside list-disc space-y-2">
+                        <li>Well-structured event categories</li>
+                        <li>Consistent classification of events</li>
+                        <li>Easy navigation across categories</li>
+                        <li>Admin-managed taxonomy</li>
+                    </ul>
+                </div>
+                <div class="p-4 w-2/3 border-2 rounded-md hover:scale-105 shadow-lg bg-gradient-to-r from-[#98b7ea] to-[#6dc8ef]">
+                    <h3 class="text-lg font-semibold mb-4">Secure & Reliable Platform</h3>
+                    <ul class="list-inside list-disc space-y-2">
+                        <li>Email-verified user accounts</li>
+                        <li>Password reset and change support</li>
+                        <li>Protected actions and data</li>
+                        <li>Built with scalable architecture</li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+    </section>
     <pre>
         🎯 Primary Goal
 
@@ -27,4 +96,5 @@
             - “Sign up”
     </pre>
     
+</div>
 {% endblock content %}

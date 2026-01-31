@@ -140,7 +140,13 @@ class CreateGroupForm(forms.ModelForm):
 
 class AssignRoleForm(forms.Form):
     role=forms.ModelChoiceField(queryset=Group.objects.all(),
-                                empty_label='Select a role')
+                                empty_label='Select a role',
+                                widget=forms.Select(
+                                    attrs={
+                                        'class':'w-full p-4 border-2 border-gray-200 rounded-md my-2'
+                                    }
+                                )
+                                )
     
 class EditProfileForm(forms.ModelForm):
     class Meta:

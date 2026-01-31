@@ -43,3 +43,13 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+
+class EventComment(models.Model):
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='your_comments')
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='comments')
+    text= models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at= models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.user}'s comment on {self.event} event"

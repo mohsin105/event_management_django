@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
-from events.forms import EventModelForm,CategoryModelForm
-from events.models import Event,Category
+from events.forms import EventModelForm,CategoryModelForm,EventCommentModelForm
+from events.models import Event,Category,EventComment
 from django.contrib import messages
 from datetime import date
 from django.db.models import Q,Count
@@ -224,7 +224,7 @@ class UpdateEvent(UserPassesTestMixin,UpdateView):
 
 
 def show_details(request,id): #prefetch_related name replaced from 'participant_list'
-    event=Event.objects.prefetch_related('participants').get(id=id)
+    event=Event.objects.prefetch_related('participants').prefetch_related('comments').get(id=id)
     is_registered = event.participants.filter(id=request.user.id).exists()
 
     context={
@@ -281,6 +281,25 @@ class DeleteCategory(UserPassesTestMixin,LoginRequiredMixin,DeleteView):
         messages.success(request,'Category deleted!!')
         return super().delete(request,*args,**kwargs)
 
+# EventComment CRUD ----------------------> 
+class CreateEventComment(LoginRequiredMixin,CreateView):
+    model=EventComment
+    form_class=EventCommentModelForm
+    pass
 
+class UpdateEventComment(UserPassesTestMixin,UpdateView):
+    model=EventComment
+    form_class=EventCommentModelForm
+    pk_url_kwarg ='comment_id'
+
+    def test_func(self):
+        return super().test_func()
+
+class DeleteEventComment(UserPassesTestMixin, DeleteView):
+    model=EventComment
+    pk_url_kwarg='comment_id'
+
+    def test_func(self):
+        return super().test_func()
     
     

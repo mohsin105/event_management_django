@@ -10,26 +10,49 @@
     <link rel="stylesheet" href="{% static 'css/output.css' %}">
 </head>
 <body>
+    <section class="flex">
+        {% comment %} Sidebar {% endcomment %}
+        {% if user.is_authenticated %}
+        <aside class="hidden md:block w-fit md:w-64 ">
+                {% include "sidebar.html" %}
+        </aside>
+        {% endif %}
+        <main class="w-full">
+            <div class="w-full">
+                {% if user.is_authenticated %}
+                    {% include "logged_nav.html" %}
+                {% else %}
+                    {% include "non_logged_nav.html" %}
+                {% endif %}
+            </div>
+            <div class="w-full">
+                {% block content %}
+                
+                {% endblock content %}
+            </div>
+        </main>
+
+    </section>
     {% comment %} NavBar Section {% endcomment %}
-    {% if user.is_authenticated %}
+    {% comment %} {% if user.is_authenticated %}
         {% include "logged_nav.html" %}
     {% else %}
         {% include "non_logged_nav.html" %}
-    {% endif %}
+    {% endif %} {% endcomment %}
     {% comment %} Sidebar and Main Content {% endcomment %}
-    <section class='grid grid-cols-12 mb-8 '>
+    {% comment %} <section class='grid grid-cols-12 mb-8 relative'>
 
         {% if user.is_authenticated %}
-        <div class="col-span-2 ">
+        <div class="col-span-2 sticky top-0 left-0">
                 {% include "sidebar.html" %}
-            </div>
+        </div>
         {% endif %}
         <div class="{% if user.is_authenticated %}col-span-10{% else %}col-span-12{% endif %}">
             {% block content %}
             
             {% endblock content %}
         </div>
-    </section>
+    </section> {% endcomment %}
     {% comment %} Footer {% endcomment %}
         {% include "footer.html" %}
 </body>

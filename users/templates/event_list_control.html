@@ -1,50 +1,51 @@
 {% comment %} Context name : title, events {% endcomment %}
 <div class="all_task bg-white w-11/12 mx-auto border-2  rounded-lg p-4 mt-3">
     <h3 class="font-bold text-2xl text-center my-4">{{title}}</h3>   
-    <div class="all_task_body grid grid-cols-4 gap-1 text-sm font-bold">
+    <div class="all_task_body grid grid-cols-6 gap-1 place-items-center text-lg font-bold bg-cyan-200 shadow-xl p-4">
         <!-- <div class="task_body_heading"></div> -->
-            <p>Event Name</p>
+            <p class="col-span-2">Event Name</p>
             <p>Category</p>
             <p>Participants</p>
-            <p>Do More</p>
+            <p class="col-span-2">Do More</p>
     </div>
     
     {% for event in events %}
-    <div class="grid grid-cols-4  text-sm mt-2 border my-6 p-2">
+    <div class="grid grid-cols-6  text-sm mt-2 border my-6 p-2">
 
-        <div class="flex items-center gap-1">
-            <div class="list_style w-1 h-1 bg-green-600 rounded-full "></div>
+        <div class="col-span-2 flex items-center gap-2 pl-4 text-base">
+            <div class="list_style size-2 bg-green-600 rounded-full flex items-center "></div>
             <p class="font-semibold">{{event.name}}</p>
             
         </div>
-        <div class="flex items-center">
-            <div class=" bg-blue-200 w-fit p-1 rounded-md ">
+        <div class="col-span-1 flex items-center place-self-center font-semibold">
+            <div class=" bg-blue-200 w-fit p-2 rounded-md ">
                 <p>{{event.category}}</p>
 
             </div>
         </div>
-        <div class="flex gap-1 text-center -space-x-3 text-white">
+        <div class="col-span-1 flex gap-1 text-center -space-x-3 text-white font-bold place-self-center">
             
-            <div class="list_style w-6 h-6 bg-green-600 rounded-full border border-white self-center flex items-center justify-center ">
+            <div class="list_style size-8 bg-green-600 rounded-full border border-white self-center flex items-center justify-center ">
                     <p >{{event.participants.all.count}}</p>
                 </div>
             
             
             </div>
-        <div class="flex items-center gap-3">
-
-            <p class="font-bold">{{event.date}}</p>
-            <button class="border-2 px-4 py-2 bg-slate-500 rounded-md">
-                <a href="{% url 'details' event.id %}">Details</a>
-            </button>
-            <button class="border-2 px-4 py-2 bg-cyan-400 rounded-md">
-                <a href="{% url 'update-event' event.id %}">Update</a>
-            </button>
-
-            <form action="{% url 'delete-event' event.id %}" method="POST">
-                {% csrf_token %}
-                <button type="submit" class="border-2 px-4 py-2 bg-red-400 rounded-md">Delete</button>
-            </form>
+        <div class="col-span-2 w-full grid grid-cols-4 gap-2 md:gap-0 ">
+            <p class="col-span-1 font-bold flex items-center">{{event.date}}</p>
+            <div class=" flex items-center flex-col md:flex-row">
+                <button class="border-2 px-4 py-2 bg-slate-500 rounded-md">
+                    <a href="{% url 'details' event.id %}">Details</a>
+                </button>
+                <button class="border-2 px-4 py-2 bg-cyan-400 rounded-md">
+                    <a href="{% url 'update-event' event.id %}">Update</a>
+                </button>
+    
+                <form action="{% url 'delete-event' event.id %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="border-2 px-4 py-2 bg-red-400 rounded-md">Delete</button>
+                </form>
+            </div>
         </div>
     </div>
     {% endfor %}

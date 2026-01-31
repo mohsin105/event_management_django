@@ -1,27 +1,30 @@
 {% extends "base.html" %}
+{% block title %}Profile{% endblock title %}
 {% block content %}
 
-    
-    <div class=' bg-cyan-100  '>
-        <div class="grid grid-cols-2 text-center w-4/5 mx-auto border-2 rounded-lg p-5">
-            <div>
+    <div class=' bg-cyan-50 py-10 h-screen'>
+        <div class="grid grid-cols-6 gap-8  w-4/5 mx-auto border-2 rounded-lg p-8">
+            <div class="col-span-2 w-full ">
                     {% if profile_image %}
                     <img
                         src="{{profile_image.url}}"
                         alt="Profile Image here 1"
-                        class="w-fit rounded-lg"
+                        class="w-full h-full object-contain object-center rounded-lg"
                     />
                     {% endif %}
             </div>
-            <div class="m-3">
-                <h1 class="text-3xl my-2">{{name}}</h1>
-                <h4 class="text-xl">username: {{username}}</h4>
-                <h4 class="text-xl">Email: {{email}}</h4>
-                <div class="flex justify-evenly m-4">
+            <div class="col-span-4 flex flex-col bg-gray-50 p-4">
+                <div>
+                    <h1 class="text-2xl my-2 font-semibold">Name: {{name}}</h1>
+                    <h4 class="text-xl"><span class="font-semibold">username :</span>  {{username}}</h4>
+                    <h4 class="text-xl"><span class="font-semibold">Email : </span>{{email}}</h4>
+                </div>
+
+                <div class="flex justify-evenly h-full items-end ">
                     <h3 class="bg-violet-600 p-2 text-white rounded-md">
                         Phone Number: {{phone_number}}
                     </h3>
-                    <div class="bg-violet-600 p-2 text-white rounded-md"></div>
+                    {% comment %} <div class="bg-violet-600 p-2 text-white rounded-md"></div> {% endcomment %}
                     <div class="bg-violet-600 p-2 text-white rounded-md">
                         Member Since:  {{member_since}}
                     </div>

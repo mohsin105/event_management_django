@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="{% static 'css/output.css' %}">
 </head>
 <body class=''>
-    <section class="dashboard flex justify-between mb-3 bg-slate-200 p-4">
+    <section class="dashboard flex justify-between bg-slate-200 p-4">
         <h1 class="text-xl font-semibold">
             <a href="{% url 'home' %}">Event</a>
         </h1>
@@ -20,15 +20,7 @@
                 <li><a href="">Pages</a></li>
                 <li><a href="">About Us</a></li>
                 <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
-                <li class="relative group" >
-                    <a href="#" class="cursor-pointer">Create</a>
-                    
-                    <ul class="absolute left-0 mt-2  group-hover:block w-40 bg-white border border-gray-200 rounded-md shadow-lg z-50 ">
-                        
-                        <li><a href="{% url 'create-participant' %}">Participant</a></li>
-                    </ul> 
-                    
-                </li>
+                
                 
                 <li><a href="{% url 'user-profile' %}">Profile</a></li>
             </ul>

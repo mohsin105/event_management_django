@@ -1,50 +1,64 @@
 {% extends "base.html" %}
 {% block title %}Details{% endblock title %}
 {% block content %}
-    <section class="text-center w-4/5 mx-auto rounded-lg bg-cyan-100 p-5">
-        <div class="m-3">
-            <h1 class="text-3xl my-2">{{event.name}}</h1>
-            <h4 class="text-xl">{{event.category}}</h4>
-            <div>
-                {% if event.asset %}
-                <img
-                src="{{event.asset.url}}"
-                alt="Event Manager App Screenshot 1"
-                class="w-full rounded-lg"
-                />
-                {% endif %}
+<section 
+    class="relative w-full h-[70vh] bg-cover bg-center"
+    style="background-image: url('{{event.asset.url}}')">
+    <div class="absolute inset-0 bg-gradient-to-b from-transparent to-black/60 " ></div>
+    <div class="relative  flex h-full items-end pb-8 pl-10">
+        <h1 class="text-4xl my-2 font-bold text-white bg-violet-700/60 p-4 rounded-md">{{event.name}}</h1>
+    </div>
+</section>
+<section class="w-11/12 mx-auto bg-cyan-50/50 p-8">
+    <div class="flex justify-between">
+        <div class="">
+            <h3 class="bg-violet-600 p-4 text-white text-xl font-semibold rounded-md">
+                Date : {{event.date}}
+        </h3>
+        </div>
+        <div class="">
+            <div class="bg-violet-600 p-4 text-white text-xl font-semibold rounded-md">
+                Starts At: {{event.start_time}}
             </div>
-{% comment %}  {% endcomment %}
         </div>
-        <div class="flex justify-evenly m-4">
-
-            <h3 class="bg-violet-600 p-2 text-white rounded-md">{{event.date}}</h3>
-            <div class="bg-violet-600 p-2 text-white rounded-md">{{event.start_time}}</div>
-            <div class="bg-violet-600 p-2 text-white rounded-md">{{event.location}}</div>
-        </div>
-        <div>
-            <p>{{event.description}}</p>
-        </div>
-        <div class="w-fit my-4">
-            <p class="font-semibold text-lg border-2 border-gray-500 rounded-xl p-4">
-                Organizer: {{event.organizer.first_name}} {{event.organizer.last_name}} 
+    </div>
+    <div class="flex flex-col-reverse  md:flex-row w-full">
+        <div class="basis-3/4 border-2 p-2">
+            <p class="font-semibold text-base border-2 border-gray-500 rounded-xl p-2 w-fit my-4">
+                Organized By : {{event.organizer.first_name}} {{event.organizer.last_name}}
             </p>
+            <p class="font-semibold text-base border-2 border-gray-500 rounded-xl p-2 w-fit my-4">
+                Category : {{event.category.name}}
+            </p>
+            <div>
+                <p class="text-base">{{event.description}}</p>
+            </div>
+            <div class="home_btn w-fit">
+                <form action="{% url 'rsvp-event' event.id %}" method="POST">
+                {% csrf_token %}
+                    <button type="submit"
+                        class="p-4 border-2 rounded-md my-2  bg-sky-500 font-bold">
+                        {% if is_registered %}Cancel Registration {% else %}Register Now{% endif %}
+                    </button>
+                </form>
+            </div>
         </div>
-        {% comment %} Participant List:  {% endcomment %}
-        <div class="text-left w-4/5 mx-auto">
-            <h4 class="text-xl font-bold">Participants: </h4>
-            {% for member in event.participants.all %}
-                <p>{{member.first_name}} {{member.last_name}}</p>
-            {% endfor %}
+        <div class="basis-1/4 border-2 p-4">
+            <p class="text-lg font-semibold my-4  p-2 py-4 bg-gray-50 rounded-md shadow-md">Location: <span  class="p-2 rounded-md  bg-violet-400">{{event.location}}</span></p>
+            <p class="text-lg font-semibold my-4 p-2 py-4 bg-gray-50 rounded-md shadow-md">Start Time: <span class="p-2 rounded-md  bg-violet-400">{{event.start_time}}</span></p>
+            <p class="text-lg font-semibold my-4 p-2 py-4 bg-gray-50 rounded-md shadow-md">End Time: <span class="p-2 rounded-md  bg-violet-400">{{event.end_time}}</span></p>
         </div>
-        <div class="home_btn w-1/6">
-            <form action="{% url 'rsvp-event' event.id %}" method="POST">
-            {% csrf_token %}
-                <button type="submit"
-                    class="p-4 border-2 rounded-md my-2  bg-sky-500 font-bold">
-                    {% if is_registered %}Cancel Registration {% else %}Register Now{% endif %}
-                </button>
-            </form>
-        </div>
-    </section>
+
+    </div>
+</section>
+{% comment %} Participant List:  {% endcomment %}
+<div class="text-left w-4/5 mx-auto my-4">
+    <h4 class="text-xl font-bold">Participants: </h4>
+    <ul class="list-disc list-inside">
+        {% for member in event.participants.all %}
+            <li>{{member.first_name}} {{member.last_name}}</li>
+        {% endfor %}
+    </ul>
+</div>
+    
 {% endblock content %}

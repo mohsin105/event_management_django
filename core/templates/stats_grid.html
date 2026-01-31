@@ -4,7 +4,7 @@
     {% endcomment %}
     {% for stat_card in stats_cards %}
     <a href="{% url url_name %}?type={{stat_card.type}}">
-        <div class="progress_card bg-white p-4 rounded-lg border-2 border-black shadow-xl">
+        <div class="progress_card bg-white p-4 rounded-lg  shadow-xl bg-gradient-to-r from-violet-400/60 to-indigo-400/60 hover:scale-105">
             <h3 class="card_heading text-sm mb-2 font-bold">{{stat_card.title}}</h3>
             <div class="card_body flex justify-between">
                 <div class="text_side">

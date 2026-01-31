@@ -1,5 +1,5 @@
 from django import forms
-from events.models import Event,Category
+from events.models import Event,Category, EventComment
 from django.contrib.auth.models import Group
 from django.contrib.auth import get_user_model
 
@@ -94,4 +94,18 @@ class CategoryModelForm(forms.ModelForm):
                     'placeholder':'Desciption of the Category',
                     'rows':8
                     }),
+        }
+
+class EventCommentModelForm(forms.ModelForm):
+    class Meta:
+        model = EventComment
+        fields=['text']
+
+        widgets={
+            'text':forms.Textarea(
+                attrs={
+                    'placeholder':'Share your thoughts on the event',
+                    'class':'w-full p-4 border-2 border-gray-400 rounded-md'
+                }
+            )
         }

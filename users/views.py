@@ -128,7 +128,10 @@ def assign_role(request,user_id):
             messages.success(request,f'User {user.username} has been assigned to the {role.name} role')
             return redirect('admin-dashboard')
 
-    context={'form':form}
+    context={
+        'form':form,
+        'currentUser' : user,
+    }
     return render(request,'admin/assign_role.html',context)
 
 def show_participants(request):

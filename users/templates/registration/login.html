@@ -2,7 +2,7 @@
 {% block title %}Log In{% endblock title %}
 {% block content %}
 
-<div class="w-1/2 mx-auto p-8 border-gray-400 border-2 rounded-md bg-sky-100">
+<div class="w-5/6 my-8 md:w-1/2 mx-auto p-8 border-gray-400 border-2 rounded-md bg-sky-100">
     <h1 class="text-3xl font-bold text-center my-8">Welcome Back, Sign In</h1>
     <div>
         {% comment %} for non-field errors {% endcomment %}
@@ -15,7 +15,7 @@
     <div>
         {% if messages %}
             {% for message in messages %}
-            <p>{{message}}</p>
+            <p class="text-base bg-violet-200 p-2 rounded-sm my-2">{{message}}</p>
             {% endfor %}
         {% endif %}
     </div>

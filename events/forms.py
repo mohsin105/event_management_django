@@ -6,14 +6,14 @@ from django.contrib.auth import get_user_model
 User=get_user_model()
 
 class EventModelForm(forms.ModelForm): #queryset e participant k user diye replace korsi. 
-    participants=forms.ModelMultipleChoiceField(
-        queryset=User.objects.all(),
-        widget=forms.CheckboxSelectMultiple,
-        required=False
-        )
+    # participants=forms.ModelMultipleChoiceField(
+    #     queryset=User.objects.all(),
+    #     widget=forms.CheckboxSelectMultiple,
+    #     required=False
+    #     )
     class Meta:
         model=Event
-        fields=['name','description','date','start_time','end_time','location','category','capacity','status','participants','asset'] #,'participant_list' does not work
+        fields=['name','description','date','start_time','end_time','location','category','capacity','status','asset'] #,'participant_list' does not work
 
         widgets={
             'name':forms.TextInput(
@@ -64,11 +64,11 @@ class EventModelForm(forms.ModelForm): #queryset e participant k user diye repla
                     'class':'w-1/3 p-4 my-2 border-2 border-gray-400 rounded-md shadow-md'
                 }
             ),
-            'participants': forms.CheckboxSelectMultiple(
-                attrs={
-                    'class':' p-4 my-2 flex border-2 border-gray-400 rounded-md',
-                }
-            ),
+            # 'participants': forms.CheckboxSelectMultiple(
+            #     attrs={
+            #         'class':' p-4 my-2 flex border-2 border-gray-400 rounded-md',
+            #     }
+            # ),
         #  'category':forms.CheckboxSelectMultiple(attrs={'class':' display-block bg-black'})
             }
 # 'category':forms.Select(attrs={'class':' display-block bg-black border border-3'})                 

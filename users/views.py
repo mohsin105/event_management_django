@@ -46,11 +46,11 @@ def create_participant(request):
             user=participant_form.save(commit=False)
             # print(user)
             user.set_password(participant_form.cleaned_data.get('password1'))
-            # user.is_active=False #uncomment this before deploy
+            user.is_active=False #uncomment this before deploy
             print(participant_form.cleaned_data)
             user.save()
-            participant_form.save() #comment this before deploy
-            messages.success(request,"A confirmation mail sent to your email. please check")
+            # participant_form.save() #comment this before deploy
+            messages.success(request,"A confirmation mail sent to your email. Please check")
             return redirect('sign-in')
         else:
             messages.error(request,'Properly fill up the form!')
@@ -87,6 +87,7 @@ def activate_user(reqeust,user_id,token):
         if default_token_generator.check_token(user,token):
             user.is_active=True
             user.save()
+            messages.success(reqeust, "Verification Successfull. Please Login!!")
             return redirect('sign-in')
         else:
             return HttpResponse("Invalid id or token")
@@ -95,6 +96,11 @@ def activate_user(reqeust,user_id,token):
 
 
 def sign_in(request):
+    if request.user.is_authenticated:
+        print("User Already Logged In")
+        messages.warning(request, "You are already Logged In!")
+        return redirect('dashboard')
+    
     form=CustomLoginForm()
     if request.method=='POST':
         form=CustomLoginForm(data=request.POST)
@@ -461,7 +467,7 @@ class CustomPasswordResetView(PasswordResetView):
         return context
     
     def form_valid(self, form):
-        messages.success(self.request,'A reset email sent, please check your email')
+        messages.success(self.request,'A verification link sent to your email, please check your email')
         return super().form_valid(form)
 
 class CustomPasswordResetConfirmView(PasswordResetConfirmView):

@@ -26,7 +26,7 @@ class ParticipantModelForm(forms.ModelForm):
 
     class Meta:
         model=User
-        fields=['username','first_name','last_name','email','profile_image','phone_number','password1','confirm_password'] 
+        fields=['username','first_name','last_name','email','phone_number','password1','confirm_password'] 
         #by default, only fields that are declared in User model
         # model=Participant
         # fields=['name','email','events']
@@ -208,18 +208,56 @@ class CustomLoginForm(AuthenticationForm):
     
 
 class CustomPasswordChangeForm(PasswordChangeForm):
-    pass
+    def __init__(self, user, *args, **kwargs):
+        super().__init__(user, *args, **kwargs)
+        self.fields['old_password'].widget.attrs.update(
+            {
+                'placeholder' : 'Enter the Current Password',
+                'class':'w-full my-2 p-4 border rounded-md'
+            }
+        )
+        self.fields['new_password1'].widget.attrs.update(
+            {
+                'placeholder':'Enter new password',
+                'class':'w-full my-2 p-4 border rounded-md'
+            }
+        )
+        self.fields['new_password2'].widget.attrs.update(
+            {
+                'placeholder':'Enter new password again',
+                'class':'w-full my-2 p-4 border rounded-md'
+            }
+        )
 
 class CustomPasswordResetForm(PasswordResetForm):
     pass
-    # def __init__(self, data = ..., files = ..., auto_id = ..., prefix = ..., initial = ..., error_class = ..., label_suffix = ..., empty_permitted = ..., field_order = ..., use_required_attribute = ..., renderer = ...):
-    #     super().__init__(data, files, auto_id, prefix, initial, error_class, label_suffix, empty_permitted, field_order, use_required_attribute, renderer)
-    #     self.fields['email'].widget.attrs.update(
-    #         {
-    #             'placeholder':'Enter Your Email',
-    #             'class':'w-full p-4 my-2 border-2 rounded-md border-gray-400'
-    #         }
-    #     )        
+    def __init__(self,*args, **kwargs ):
+        super().__init__(*args, **kwargs)
+        self.fields['email'].widget.attrs.update(
+            {
+                'placeholder':'Enter your email ',
+                'class' : 'w-full my-2 p-4 border rounded-md'
+            }
+        )    
 
 class CustomPasswordResetConfirmForm(SetPasswordForm):
-    pass
+    
+    def __init__(self, user, *args, **kwargs):
+        super().__init__(user, *args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.setdefault(
+                'class',
+                'w-full my-2 p-4 border rounded-md'
+            )
+        # self.fields['new_password1'].widget.attrs.update(
+        #     {
+        #         'placeholder' : 'Enter New Password',
+        #         'class': 'w-full my-2 p-4 border rounded-md'
+        #     }
+        # )
+        # self.fields['new_password2'].widget.attrs.update(
+        #     {
+        #         'placeholder':'Enter new password again',
+        #         'class':'w-full my-2 p-4 border rounded-md'
+        #     }
+        # )
